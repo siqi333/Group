@@ -1,0 +1,163 @@
+{% extends 'customer/customer_dashboard.html' %} {% block content1 %} {%
+  endblock %} {% block content %}
+
+
+
+  <section class="dashboard-area ptb-54">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4">
+          <ul class="dashboard-navigation">
+            <li>
+              <h3>Setting</h3>
+            </li>
+            <li>
+              <a href="/customer/personal">My Profile</a>
+            </li>
+            <li>
+              <a href="/customer/password">Password</a>
+              <li>
+                <a href="/customer/notification">Reminder</a>
+              </li>
+            </li>
+            <li>
+              <a href="/customer/identification">Identification</a>
+            </li>
+          </ul>
+        </div>
+        
+      <div class="col-lg-8">
+        <div class="address-list">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              <ul class="flashes">
+                {% for category, message in messages %}
+                  <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          {% endwith %}
+
+          <h3>Reminder</h3>
+          {% if notification %}
+            {% set grouped_notifications = {} %}
+            {% for method, store, equipment, quantity, date in notification %}
+              {% set key = date %}
+              {% if key not in grouped_notifications %}
+                {% set _ = grouped_notifications.update({key: {}}) %}
+              {% endif %}
+              {% if store not in grouped_notifications[key] %}
+                {% set _ = grouped_notifications[key].update({store: []}) %}
+              {% endif %}
+              {% set _ = grouped_notifications[key][store].append((method, equipment, quantity)) %}
+            {% endfor %}
+            <ul class="notification-list">
+              {% for date, stores in grouped_notifications.items() %}
+                <li class="notification">
+                  <span class="date-icon"><i class="fas fa-calendar-alt"></i> {{ date.strftime("%d/%m/%Y") }}</span>
+                  {% for store, details in stores.items() %}
+                    <span>At {{ store }}, you have</span>
+                    {% for method, equipment, quantity in details %}
+                      <span>{{ quantity }} {{ equipment }} to 
+                      <span class="{{ 'pick-up' if method == 'pick up' else 'drop-off' }}">{{ method }}</span></span>
+                      {% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                    {% if not loop.last %}. {% endif %}
+                  {% endfor %}
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p>No notifications available.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* .dashboard-navigation {
+    list-style: none;
+    padding: 0;
+  }
+
+  .dashboard-navigation li {
+    margin-bottom: 10px;
+  }
+
+  .dashboard-navigation li h3 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+  }
+
+  .dashboard-navigation li a {
+    text-decoration: none;
+    color: #333;
+  }
+
+  .dashboard-navigation li a:hover {
+    text-decoration: underline;
+  } */
+
+  .flashes {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+  }
+
+  .flashes li {
+    margin-bottom: 10px;
+  }
+
+  .flashes .success {
+    color: green;
+  }
+
+  .flashes .error {
+    color: red;
+  }
+
+  .notification-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .notification {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+
+  .notification .date-icon {
+    margin-right: 10px;
+    font-size: 1.2em;
+    color: #888;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .notification strong {
+    font-size: 1.1em;
+  }
+
+  .pick-up {
+    color: green;
+    font-weight: bold;
+  }
+
+  .drop-off {
+    color: red;
+    font-weight: bold;
+  }
+
+  .notification span {
+    display: inline;
+  }
+</style>
+
+<!-- Add Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+{% endblock %}

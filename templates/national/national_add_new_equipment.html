@@ -1,0 +1,198 @@
+{% extends 'national/national_dashboard.html' %}
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">* {{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<section class="dashboard-area ptb-54">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="edit-profile">
+          <h3>Add Equipment</h3>
+
+          <form method="POST" class="submit-property-form"> 
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    value=""
+                    name="name"
+                    required
+                    pattern="[A-Za-z0-9\s!@#$%^&*(),.?\":{}|
+                  />
+                  <div class="invalid-feedback">
+                    Please enter valid characters including alphabets, numbers, and symbols.
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Specifications</label>
+                  <textarea
+                    class="form-control"
+                    name="specifications"
+                    required
+                  ></textarea>
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Cost</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="cost"
+                    min="1"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Image Upload</label>
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="UploadImage"
+                    name="UploadImage"
+                    placeholder="Upload an image"
+                  />
+                  <input type="hidden" id="Image" name="Image" value="" />
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Min Hire Period (Days)</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="min_hire_period"
+                    min="1"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Max Hire Period (Days)</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="max_hire_period"
+                    min="1"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Inventory</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="inventory"
+                    min="1"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Purchase Date</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    name="purchase_date"
+                    min="<?= date('Y-m-d'); ?>"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Hire Cost</label>
+                  <input
+                    type="number"
+                    step="any"
+                    class="form-control"
+                    name="hire_cost"
+                    min="0.01"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Category</label>
+                  <select class="form-control" name="category_id" required>
+                    {% for category in category_list %}
+                    <option value="{{category.category_id}}">
+                      {{category.category_name}}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Store</label>
+                  <select class="form-control" name="store_id" required>
+                    {% for store in store_list %}
+                    <option value="{{store.store_id}}">
+                      {{store.store_name}}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-lg-12">
+                <button type="submit" class="default-btn">Save Change</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.getElementById("UploadImage").addEventListener("change", function (event) {
+    var file = event.target.files[0];
+    var formData = new FormData();
+    formData.append("file", file);
+
+    fetch("/upload_product", {
+      method: "POST",
+      body: formData,
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      document.getElementById("Image").value = data.file_path;
+      document.getElementById("img").src = "/static/images/products" + data.file_path;
+    })
+    .catch((error) => console.error("Error:", error));
+  });
+
+  document.getElementById('add-equipment-form').addEventListener('submit', function(event) {
+    var nameField = document.getElementById('name');
+    if (!nameField.checkValidity()) {
+      nameField.classList.add('is-invalid');
+      event.preventDefault();
+    } else {
+      nameField.classList.remove('is-invalid');
+    }
+  });
+</script>
+{% endblock %}

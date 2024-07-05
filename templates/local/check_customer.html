@@ -1,0 +1,41 @@
+{% extends 'local/local_dashboard.html' %}{% block content1 %} {%
+endblock %} {% block content %}
+<section class="dashboard-area ptb-54">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8" style="width: 100%">
+        <div class="cart-area recent-order">
+          <h3>Customer Info</h3>
+          <form class="cart-controller mb-0">
+            <div class="cart-table table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Address</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for record in records %}
+                  <tr>
+                    <td class="first_name">{{record[0]}}</td>
+                    <td class="last_name">{{record[1]}}</td>
+                    <td class="email">{{record[2]}}</td>
+                    <td class="phone">{{record[3]}}</td>
+                    <td class="address">{{record[4]}}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

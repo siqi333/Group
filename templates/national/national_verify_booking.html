@@ -1,0 +1,66 @@
+{% extends 'national/national_dashboard.html' %}
+
+{% block content %}
+
+<div class="container ptb-54">
+  <h3>Customer Details</h3>
+  <div class="row">
+    <div class="col-lg-4">
+      <img
+        src="{{ url_for('static', filename='identifications/' ~ customer_details[4]) }}"
+        alt="Customer Image"
+        class="img-thumbnail"
+      />
+    </div>
+    <div class="col-lg-8">
+      <ul class="list-group">
+        <li class="list-group-item">
+          <strong>Booking Id:</strong> {{ customer_details[3] }}
+        </li>
+        <li class="list-group-item">
+          <strong>Last Name:</strong> {{ customer_details[0] }}
+        </li>
+        <li class="list-group-item">
+          <strong>First Name:</strong> {{ customer_details[1] }}
+        </li>
+        <li class="list-group-item">
+          <strong>Date of Birth:</strong> {{ customer_details[2].strftime("%d/%m/%Y") }}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-lg-8" id="details" style="width: 100%; margin-top: 30px;">
+    <div class="cart-area recent-order">
+      <h3>Booking Details</h3>
+      <div class="cart-table table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th scope="col">Product</th>
+              <th scope="col"></th>
+              <th scope="col" style="text-align: center">Quantity</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for detail in booking_details %}
+            <tr>
+              <td class="product-thumbnail">
+                <img
+                  src="{{ url_for('static', filename='images/products/' ~ detail[0]) }}"
+                  alt="Image"
+                  style="width: 58px; height: 58px"
+                />
+              </td>
+              <td class="product-name">{{ detail[1] }}</td>
+              <td class="product-price" style="text-align: center">{{ detail[2] }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

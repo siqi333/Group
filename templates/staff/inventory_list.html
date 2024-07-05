@@ -1,0 +1,113 @@
+{% extends 'staff/staff_dashboard.html' %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-success">* {{ message }}</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<section class="dashboard-area ptb-54">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="dashboard-content">
+          <h3>Inventory List</h3>
+          <!-- search -->
+          <form action="{{ url_for('inventory_list') }}" method="post">
+            <div class="form-group mr-2">
+              <label for="equipment_name">Equipment Name:</label>
+              <input type="text" class="form-control" id="equipment_name" name="equipment_name" value="{{ equipment_name }}">
+            </div>
+
+            <div class="form-group mr-2">
+              <label for="category_id">Category:</label>
+              <select class="form-control" id="category_id" name="category_id">
+                <option value="" {% if not category_id %}selected{% endif %}>All Categories</option>
+                {% for category in categories %}
+                <option value="{{ category[0] }}" {% if category_id == category[0] %}selected{% endif %}>{{ category[1] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-group mr-2">
+              <label for="status">Status:</label>
+              <select class="form-control" id="status" name="status">
+                <option value="" {% if not status %}selected{% endif %}>All Statuses</option>
+                <option value="available" {% if status == 'available' %}selected{% endif %}>Available</option>
+                <option value="reserved" {% if status == 'reserved' %}selected{% endif %}>Reserved</option>
+                <option value="repair" {% if status == 'repair' %}selected{% endif %}>Repair</option>
+                <option value="retired" {% if status == 'retired' %}selected{% endif %}>Retired</option>
+              </select>
+            </div>
+
+            <button type="submit" class="default-btn">Search Inventory</button>
+          </form>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Image</th>
+                  <th>Serial Number</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in equipment %}
+                <tr>
+                  <td>{{ item[1] }}</td>
+                  <td>
+                    <img onclick="location.href='{{ url_for('edit_inventory', store_id=store_id, equipment_id=item[0], serial_number=item[8]) }}'"
+                         src="{{ url_for('static', filename='images/products/' ~ item[4]) }}"
+                         alt="{{ item[1] }}" width="50">
+                  </td>
+                  <td>{{ item[8] }}</td>
+                  <td>{{ item[9] }}</td>
+                  <td>
+                    <a href="{{ url_for('edit_inventory', store_id=store_id, equipment_id=item[0], serial_number=item[8]) }}" 
+                      class="btn default-btn" style="padding: 10px 20px; border-radius: 50px; font-size: 14px;">
+                      <i class="ri-pencil-line"></i>Edit
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer-area">
+  <!-- Add your footer code here -->
+</footer>
+
+<div class="go-top">
+  <i class="ri-arrow-up-s-fill"></i>
+  <i class="ri-arrow-up-s-fill"></i>
+</div>
+
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/meanmenu.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/owl.carousel.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/wow.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/range-slider.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/form-validator.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/contact-form-script.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ajaxchimp.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+
+<script>
+  $(document).ready(function() {
+    $('#status').val("{{ status }}");
+    $('#category_id').val("{{ category_id }}");
+  });
+</script>
+{% endblock %}

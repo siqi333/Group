@@ -1,0 +1,130 @@
+{% extends 'layout.html' %} 
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Form</title>
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .register-container { max-width: 500px; min-height: 500px; margin: auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); margin-top: 50px; }
+        .register-title { text-align: center; margin-bottom: 30px; }
+        .select-min-height {
+            min-height: 40px; 
+        }
+        .register-form input, .register-form select, .register-form button { 
+            width: 100%; 
+            padding: 10px; 
+            margin-bottom: 20px; 
+            border: 1px solid #ced4da; 
+            border-radius: 5px; 
+        }
+        .register-form input:focus, .register-form select:focus { outline: none; border-color: #007bff; }
+        .register-form button, .home-button { 
+            width: 100%; 
+            padding: 10px; 
+            border-radius: 5px; 
+            border: 1px solid #ced4da; 
+            background-color: #007bff; 
+            color: #fff; 
+            cursor: pointer; 
+            transition: background-color 0.2s; 
+            text-align: center;
+            display: block; /* Ensure the button stretches to the width of its container */
+            margin-bottom: 20px; /* Consistent spacing */
+        }
+        .home-button {
+            background-color: #28a745; /* Separate color for the home button */
+        }
+        .home-button:hover { background-color: #007bff; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="register-container">
+            <h2 class="register-title">Register</h2>
+            <form class="register-form" action="{{ url_for('register') }}" method="post" autocomplete="off" enctype="multipart/form-data">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                {% if msg %}
+                    <div class="alert alert-danger">{{ msg }}</div>
+                {% endif %}
+                <!-- Form inputs remain unchanged -->
+                <div class="form-group">
+                    <div class="form-group">
+                        <input type="text" name="username" class="form-control" placeholder="Username" required pattern="^[A-Za-z0-9]+$" title="Username must contain only letters and numbers, with no spaces.">
+                    <div class="form-group">
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Password" required pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d\S]{8,}$" title="Password must be at least 8 characters long and include at least one letter, one number, and may include symbols, with no spaces.">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Confirm Password" required pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d\S]{8,}$" title="Password must be at least 8 characters long and include at least one letter, one number, and may include symbols, with no spaces.">
+                    </div>
+                    <input type="text" name="firstname" class="form-control" placeholder="First Name" required pattern="[A-Za-z ]+" title="Please enter only English alphabets and spaces">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="lastname" class="form-control" placeholder="Last Name" required pattern="[A-Za-z]+" title="Please enter only English alphabets">
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" name="email" class="form-control" placeholder="Email" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Please enter a valid email address">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="address" class="form-control" placeholder="Address" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="phone_number" class="form-control" placeholder="Phone Number" required  pattern="\d{7,10}" title="Please enter 7-10 digit valid phone number">
+                </div>
+                <div class="form-group">
+                    <label for="dateofbirth">Date of Birth:</label>
+                    <input type="date" id="dateofbirth" name="dateofbirth" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label for="identification">Identification:</label>
+                  <input type="file" id="identification" name="identification" class="form-control" required>
+              </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          var form = document.querySelector('.register-form');
+          form.addEventListener('submit', function(event) {
+              var password = document.getElementById('password').value;
+              var confirmPassword = document.getElementById('confirm_password').value;
+          
+              // Check if passwords match
+              if (password !== confirmPassword) {
+                  event.preventDefault(); // Prevent form submission
+                  alert('Passwords do not match!');
+                  return; // Stop further execution
+              }
+          });
+  
+          // Set the maximum allowable date (18 years ago)
+          var dateOfBirthInput = document.getElementById('dateofbirth');
+          var today = new Date();
+          var eighteenYearsAgo = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+          dateOfBirthInput.setAttribute('max', eighteenYearsAgo.toISOString().split('T')[0]);
+      });
+  
+      function goToHome() {
+          window.location.href = "/";
+      }
+  </script>
+  
+</body>
+</html>
+{% endblock %}

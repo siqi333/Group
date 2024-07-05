@@ -1,0 +1,105 @@
+{% extends 'customer/customer_dashboard.html' %} {% block content1 %} {%
+  endblock %} {% block content %}
+
+    <section class="dashboard-area ptb-54">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-4">
+            <ul class="dashboard-navigation">
+              <li>
+                <h3>My Booking</h3>
+              </li>
+              <li>
+                <a href="/customer/booking">Booking</a>
+              </li>
+              <li>
+                <a href="/customer/prior_records">Prior Booking</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-lg-8">
+            <div class="cart-area recent-order" style="width: 100%;">
+              <h3>Booking Details</h3>
+
+              <div class="cart-table table-responsive">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col">Product</th>
+                      <th scope="col"></th>
+                      <th scope="col">Quantity</th>
+                      <th scope="col">Total</th>
+                      <th scope="col" style="text-align: center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for detail in booking_details %}
+                      <tr>
+                        <form
+                        class="cart-controller mb-0"
+                        action="/customer/booking_extend"
+                        method="POST"
+                      >
+                        <input
+                          type="hidden"
+                          name="equipment_id"
+                          value="{{detail[6]}}"
+                        />
+                        <input
+                          type="hidden"
+                          name="quantity"
+                          value="{{detail[5]}}"
+                        />
+                        <input
+                          type="hidden"
+                          name="end_date"
+                          value="{{detail[3]}}"
+                        />
+                        <td class="product-thumbnail">
+                          <img
+                            src="/static/images/products/{{detail[1]}}"
+                            alt="Image"
+                            style="width: 58px; height: 58px"
+                          />
+                        </td>
+                        <td class="product-name">{{detail[0]}}</td>
+                        <td class="product-price" style="text-align: center">
+                          {{detail[5]}}
+                        </td>
+                        <td class="product-price">${{detail[4]}}</td>
+      
+                         {% if detail[3] > today %}
+                        <td>
+                          <button class="default-btn" type="submit" style="padding: 10px;">
+                            Extend
+                          </button>
+                        </td>
+            
+                        {% else %}
+                        <td></td>
+                        {% endif %}
+                      </tr>
+
+                      <tr>
+                        <td>Hire Period:</td>
+                        <td class="days" style="text-align: center">
+                          <span class="days"
+                            >{{detail[2].strftime("%d/%m/%Y")}} - {{detail[3].strftime("%d/%m/%Y")}}</span
+                          >
+                        </td>
+                      </form>
+                      </tr>
+                      {% endfor %}
+                  
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {% endblock %}
+
+    

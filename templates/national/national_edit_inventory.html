@@ -1,0 +1,55 @@
+{% extends 'national/national_dashboard.html' %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-{{ category }}">* {{ message }}</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<section class="dashboard-area ptb-54">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="dashboard-content">
+          <h3>Edit Inventory</h3>
+          <form action="{{ url_for('national_edit_inventory', store_id=current_store_id, equipment_id=equipment_id, serial_number=serial_number) }}" method="post" onsubmit="return confirm('Are you sure you want to update the inventory details?');">
+            <div class="form-group">
+              <label for="name">Name:</label>
+              <input type="text" class="form-control" id="name" name="name" value="{{ inventory_items[0] }}" readonly>
+            </div>
+            <div class="form-group">
+              <label for="serial_number">Serial Number:</label>
+              <input type="text" class="form-control" id="serial_number" name="serial_number" value="{{ inventory_items[1] }}" readonly>
+            </div>
+            <div class="form-group">
+              <label for="purchase_date">Purchase Date:</label>
+              <input type="date" class="form-control" id="purchase_date" name="purchase_date" value="{{ inventory_items[2] }}">
+            </div>
+            <div class="form-group">
+              <label for="status">Status:</label>
+              <select class="form-control" id="status" name="status">
+                <option value="available" {% if inventory_items[3] == 'available' %}selected{% endif %}>Available</option>
+                <option value="reserved" {% if inventory_items[3] == 'reserved' %}selected{% endif %}>Reserved</option>
+                <option value="repair" {% if inventory_items[3] == 'repair' %}selected{% endif %}>Repair</option>
+                <option value="retired" {% if inventory_items[3] == 'retired' %}selected{% endif %}>Retired</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="store_id">Store:</label>
+              <select class="form-control" id="store_id" name="store_id">
+                {% for store in stores %}
+                <option value="{{ store[0] }}" {% if store[0] == inventory_items[5] %}selected{% endif %}>{{ store[1] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

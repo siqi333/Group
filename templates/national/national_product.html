@@ -1,0 +1,129 @@
+{% extends 'national/national_dashboard.html' %} {% block content %}
+<section class="popular-categories-area pt-54 pb-30">
+  <div class="container">
+    <div class="section-title">
+      <h2>Equipment Categories</h2>
+    </div>
+    <div class="row justify-content-center">
+      {% for category in categorys %}
+      <div class="col-lg-2 col-sm-6 col-md-4">
+        <div class="single-popular-categories">
+          <a href="/national/national_product?category={{category[0]}}">
+            <img
+              src="{{ url_for('static', filename='images/icon/' ~ category[2]) }}"
+              alt="Image"
+            />
+            <span>{{category[1]}}</span>
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="product-list-area pt-54 pb-30">
+  <div class="container">
+    <div class="section-title text-center">
+      <h1>{{ category_name }}</h1>
+    </div>
+
+    <div class="showing-result">
+      <div class="row align-items-center">
+        <div class="col-lg-6 col-md-6">
+          <div
+            class="showing-top-bar-ordering"
+            style="width: 250px; display: flex; align-items: center"
+          >
+            <span>Store: </span>
+            <select
+              id="store-select"
+              class="form-select"
+              aria-label="Default select example"
+              style="flex: 1; margin-left: 20px"
+            >
+              <option selected value="{{stores[0][0]}}">
+                {{stores[0][1]}}
+              </option>
+              {% for store in stores[1:] %}
+              <option value="{{store[0]}}">{{store[1]}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      {% for product in products %}
+      <div
+        class="col-lg-4 col-md-6"
+        data-store-id="{{product[3]}}"
+        id="product-info"
+      >
+        <div class="single-product">
+          <img
+            src="{{ url_for('static', filename='images/products/' ~ product[2]) }}"
+            alt="{{ product[1] }}"
+          />
+          <h3>{{ product[1] }}</h3>
+          <p>Cost: ${{ product[4] }}</p>
+          <a
+            href="/national/national_product_details?store_id={{ product[3] }}&equipment_id={{ product[0] }}"
+            class="btn btn-primary btn-orange"
+            style="color: black"
+            >View and Update Details</a
+          >
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script>
+  window.onload = function () {
+    var selectedStoreId = document.getElementById("store-select").value;
+
+    var products = document.querySelectorAll("#product-info");
+    products.forEach(function (product) {
+      var productStoreId = product.getAttribute("data-store-id");
+
+      if (productStoreId === selectedStoreId) {
+        product.style.display = "block";
+      } else {
+        product.style.display = "none";
+      }
+    });
+  };
+
+  document
+    .getElementById("store-select")
+    .addEventListener("change", function () {
+      var selectedStoreId = this.value;
+
+      var products = document.querySelectorAll("#product-info");
+      products.forEach(function (product) {
+        var productStoreId = product.getAttribute("data-store-id");
+
+        if (productStoreId === selectedStoreId) {
+          product.style.display = "block";
+        } else {
+          product.style.display = "none";
+        }
+      });
+    });
+</script>
+
+<style>
+  .btn-orange {
+    background-color: darkorange;
+    border-color: darkorange;
+    color: white;
+  }
+  .btn-orange:hover {
+    background-color: #cc8400;
+    border-color: #cc8400;
+  }
+</style>
+{% endblock %}

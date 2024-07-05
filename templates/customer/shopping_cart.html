@@ -1,0 +1,203 @@
+{% extends 'customer/customer_dashboard.html' %} {% block content1 %} {%
+endblock %} {% block content %}
+
+<script>
+  function showAlert(event) {
+    event.preventDefault(); // Prevent the default action (navigation)
+    if (confirm("Are you sure you want to delete this equipment?")) {
+      window.location.href = event.currentTarget.parentElement.href;
+    }
+  }
+</script>
+
+<style>
+  .accordion {
+    list-style-type: none;
+    padding: 0;
+  }
+  .accordion li {
+    margin-bottom: 10px;
+  }
+  .accordion-title {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #000;
+    font-size: 18px;
+  }
+  .accordion-title input[type="radio"] {
+    margin-right: 10px;
+  }
+</style>
+
+<section class="cart-area ptb-54">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-9">
+        <form
+          class="cart-controller"
+          id="cart-controller"
+          action="/customer/payment"
+          method="POST"
+        >
+          <div class="cart-table table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">Product</th>
+                  <th scope="col">Store</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if cart_details %} {% for cart in cart_details %}
+                <tr>
+                  <td class="product-thumbnail">
+                    <img
+                      src="/static/images/products/{{cart[7]}}"
+                      alt="Image"
+                    />
+                  </td>
+                  <td class="product-name">
+                    {{cart[6]}}
+                    <br /><small>{{cart[9]}}</small>
+                  </td>
+                  <td class="product-price">
+                    <span class="amount">${{cart[2]}}.00</span>
+                  </td>
+                  <td class="product-quantity" style="text-align: center">
+                    <span class="quantity">{{cart[5]}}</span>
+                  </td>
+
+                  <td class="product-subtotal">
+                    <span class="subtotal">${{cart[11]}}.00</span>
+                  </td>
+                  <td class="trash">
+                    <a
+                      href="/customer/shopping_cart_delete?equipment_id={{cart[1]}}"
+                      class="remove"
+                    >
+                      <i class="ri-close-fill" onclick="showAlert(event)"></i>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Hire Period:</td>
+                  <td class="days" style="text-align: center">
+                    <span class="days">{{cart[12]}} - {{cart[13]}}</span>
+                  </td>
+                </tr>
+
+                <input type="hidden" name="equipment_id" value="{{cart[1]}}" />
+                <input type="hidden" name="price" value="{{cart[2]}}" />
+                <input type="hidden" name="start_date" value="{{cart[3]}}" />
+                <input type="hidden" name="end_date" value="{{cart[4]}}" />
+                <input type="hidden" name="quantity" value="{{cart[5]}}" />
+                <input type="hidden" name="total" value="{{cart[11]}}" />
+
+                <input type="hidden" name="store_id" value="{{cart[10]}}" />
+                <input type="hidden" name="customer_id" value="{{cart[0]}}" />
+                <input
+                  type="hidden"
+                  name="total_cost"
+                  id="total_cost"
+                  value="{{total_cost}}"
+                />
+
+                {% endfor %} {% else %}
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td><h3>Your cart is empty</h3></td>
+                </tr>
+
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </form>
+        <div class="coupon-cart">
+          <div class="row"></div>
+        </div>
+      </div>
+
+      <div class="col-lg-3">
+        <div class="cart-totals">
+          <div class="faq-accordion">
+            <h3>Delivery method</h3>
+            <ul class="accordion">
+              <li>
+                <label class="accordion-title" style="padding-left: 0">
+                  <input type="radio" name="method" id="pickup" checked />
+                  Pick Up
+                </label>
+              </li>
+              <li>
+                <label class="accordion-title" style="padding-left: 0">
+                  <input type="radio" name="method" id="deliver" />
+                  Deliver to home
+                </label>
+              </li>
+            </ul>
+          </div>
+          <h3 class="cart-checkout-title">Cart Totals</h3>
+          <ul>
+            <li>Subtotal <span>${{ total_cost }}.00</span></li>
+            <li>Shipping <span id="shipping">$0.00</span></li>
+            <li>
+              <b>Payable Total</b>
+              <span id="totalShow"><b>${{ total_cost }}.00</b></span>
+            </li>
+          </ul>
+          <button type="submit" class="default-btn" id="checkout-button">
+            Proceed to checkout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+
+  const pickup = document.getElementById('pickup')
+  const deliver = document.getElementById('deliver')
+  const shipping = document.getElementById('shipping')
+  const totalShow = document.getElementById('totalShow')
+  const total = document.getElementById('total_cost')
+  const baseCost = parseFloat(total.value);
+
+  pickup.addEventListener('click',function(){
+    shipping.innerHTML='$0.00'
+    totalShow.innerHTML='$'+baseCost.toFixed(2)
+    total.value = baseCost.toFixed(2)
+  })
+  deliver.addEventListener('click',function(){
+    shipping.innerHTML='$100.00'
+    const newTotal = baseCost + 100
+    totalShow.innerHTML = '$'+newTotal.toFixed(2)
+    total.value = newTotal.toFixed(2)
+  })
+
+
+  let ready = {{ ready}};
+
+  if(ready === 0){
+    document
+    .getElementById("checkout-button")
+    .addEventListener("click", function () {
+      alert('We are not able to process bookings for different stores, sorry for the inconvenient!!')
+    });
+  }
+  else{  document
+    .getElementById("checkout-button")
+    .addEventListener("click", function () {
+      document.getElementById("cart-controller").submit();
+    });}
+</script>
+
+{% endblock %}

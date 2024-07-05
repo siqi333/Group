@@ -1,0 +1,109 @@
+{% extends 'local/local_dashboard.html' %} {% block content %}
+
+<section class="dashboard-area ptb-54">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="edit-profile">
+          <h3>Edit Promotion</h3>
+
+          <form
+            method="POST"
+            class="submit-property-form"
+            action="/local/promotion_new"
+          >
+            <div class="row">
+              <div class="col-lg-6" hidden>
+                <div class="form-group">
+                  <label>Promotion Code</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="code"
+                    value="new Promotion"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Promotion Info</label>
+                  <textarea
+                    class="form-control"
+                    name="info"
+                    required
+                  ></textarea>
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Start Date</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    name="start"
+                    id="start-date"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>End Date</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    name="end"
+                    id="end-date"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Discount Rate (%)</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="discount"
+                    max="100"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="col-lg-12">
+                <button type="submit" class="default-btn">Add</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var startDateInput = document.getElementById("start-date");
+    var endDateInput = document.getElementById("end-date");
+
+    // Set the minimum date for the start date input to be tomorrow
+    var today = new Date();
+    var tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+    startDateInput.min = tomorrow.toISOString().split("T")[0];
+
+    startDateInput.addEventListener("change", function () {
+      // Set the minimum date for the end date input to be the day after the selected start date
+      var startDate = new Date(this.value);
+      var minEndDate = new Date(startDate);
+      minEndDate.setDate(startDate.getDate() + 1);
+      endDateInput.min = minEndDate.toISOString().split("T")[0];
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends 'customer/customer_dashboard.html' %} {% block content1 %} {%
+endblock %} {% block content %}
+
+<section class="popular-categories-area pt-54 pb-30">
+  <div class="container">
+    <div class="section-title">
+      <h2>All Categories</h2>
+    </div>
+
+    <div class="row justify-content-center">
+      {% for category in categorys %}
+      <div class="col-lg-2 col-sm-6 col-md-4">
+        <div class="single-popular-categories">
+          <a href="/customer/product?category={{category[0]}}">
+            <img src="/static/images/icon/{{category[2]}}" alt="Image" />
+            <span>{{category[1]}}</span>
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="featured-products-area ptb-54">
+  <div class="container">
+    <div class="section-title text-center">
+      <h1>{{category_name}}</h1>
+    </div>
+
+    <div class="showing-result">
+      <div class="row align-items-center">
+        <div class="col-lg-6 col-md-6">
+          <div
+            class="showing-top-bar-ordering"
+            style="width: 250px; display: flex; align-items: center"
+          >
+            <span>Store: </span>
+            <select
+              id="store-select"
+              class="form-select"
+              aria-label="Default select example"
+              style="flex: 1; margin-left: 20px"
+            >
+              <option selected value="{{stores[0][0]}}">
+                {{stores[0][1]}}
+              </option>
+
+              {% for store in stores[1:] %}
+              <option value="{{store[0]}}">{{store[1]}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      {% for product in products %}
+
+      <div
+        class="col-xl-3 col-sm-6"
+        data-store-id="{{product[3]}}"
+        id="product-info"
+      >
+        <div class="single-products">
+          <div class="product-img">
+            <a
+              href="/customer/product_details?store_id={{product[3]}}&equipment_id={{product[0]}}"
+            >
+              <div style="display: flex; justify-content: center">
+                <img
+                  src="/static/images/products/{{product[2]}}"
+                  alt="Image"
+                  style="width: 75%; height: 75%"
+                />
+              </div>
+            </a>
+          </div>
+          <div class="product-content">
+            <a href="product-details.html" class="title"> {{product[1]}} </a>
+
+            <ul class="products-rating">
+              <li style="color: black">
+                Hire Rate from <small>(Incl. GST)</small>
+              </li>
+            </ul>
+
+            <ul class="products-price">
+              <li><h4>${{product[4]}}</h4></li>
+            </ul>
+            <ul class="products-cart-wish-view">
+              <li>
+                <a
+                  href="/customer/product_details?store_id={{product[3]}}&equipment_id={{product[0]}}"
+                  class="default-btn"
+                >
+                  <i class="ri-shopping-cart-line"></i>
+                  Hire
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {% endfor %}
+
+      <div class="col-12"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  window.onload = function () {
+    var selectedStoreId = document.getElementById("store-select").value;
+
+    var products = document.querySelectorAll("#product-info");
+    products.forEach(function (product) {
+      var productStoreId = product.getAttribute("data-store-id");
+
+      if (productStoreId === selectedStoreId) {
+        product.style.display = "block";
+      } else {
+        product.style.display = "none";
+      }
+    });
+  };
+
+  document
+    .getElementById("store-select")
+    .addEventListener("change", function () {
+      var selectedStoreId = this.value;
+
+      var products = document.querySelectorAll("#product-info");
+      console.log(products);
+      products.forEach(function (product) {
+        var productStoreId = product.getAttribute("data-store-id");
+
+        if (productStoreId === selectedStoreId) {
+          product.style.display = "block";
+        } else {
+          product.style.display = "none";
+        }
+      });
+    });
+</script>
+
+{% endblock %}

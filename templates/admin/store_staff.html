@@ -1,0 +1,73 @@
+{% extends 'admin/admin_dashboard.html' %}
+
+{% block content1 %}
+{% endblock %}
+
+{% block content %}
+
+<style>
+	.staff-profile {
+		margin-bottom: 30px;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.staff-profile img {
+		border: 2px solid #ddd;
+		padding: 5px;
+		margin-bottom: 10px;
+		width: 150px;
+		height: 150px;
+	}
+
+	.staff-profile h5 {
+		font-size: 1.1em;
+		margin-bottom: 5px;
+	}
+
+	.staff-profile p {
+		font-size: 0.9em;
+		color: #888;
+	}
+
+	.staff-profile:hover {
+		background-color: #f9f9f9;
+		border-radius: 5px;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	}
+</style>
+
+<div class="container mt-5">
+	<label for="store">Preferred Store:</label>
+	<select id="store" name="store" class="form-control" onchange="updatePage()" required>
+		{% for store_id, store_name in stores.items() %}
+		<option value="{{ store_id }}" {% if selected_store|string == store_id|string %}selected{% endif %}>{{ store_name }}</option>
+		{% endfor %}
+	</select><br><br>
+	<div class="row">
+		<div class="col-12 text-center mb-4">
+			<p>Please click on the image to view and edit the profile details.</p>
+		</div>
+	</div>
+	<div class="row text-center">
+		{% for staff in staff_list %}
+		<div class="col-md-3 col-sm-6">
+			<a href="{{ url_for('manage_staff', staff_id=staff[0]) }}" class="staff-profile">
+				<img src="{{ url_for('static', filename='images/profile/' ~ (staff[1] if staff[1] else 'default.png')) }}"
+					alt="{{ staff[2] }}'s Profile Image" class="img-fluid rounded-circle">
+				<h5 class="mt-3">{{ staff[2] }} </h5>
+				<p></p>
+			</a>
+		</div>
+		{% endfor %}
+	</div>
+	<script>
+		function updatePage() {
+			var selectElement = document.getElementById('store');
+			var selectedValue = selectElement.value;
+			window.location.href = window.location.pathname + '?store=' + selectedValue;
+		}
+	</script>
+</div>
+
+{% endblock %}

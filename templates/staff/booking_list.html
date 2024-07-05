@@ -1,0 +1,186 @@
+{% extends 'staff/staff_dashboard.html' %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-danger">* {{ message }}</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<!doctype html>
+<style>
+    <thead> {
+    display: flex;
+}
+
+th {
+    flex: 1;
+    white-space: nowrap;
+}
+
+</style>
+<html lang="zxx">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.theme.default.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/remixicon.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/meanmenu.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <title>Equipment List</title>
+</head>
+<body>
+
+
+<section class="dashboard-area ptb-54">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="dashboard-content">
+                    <h3>Booking Search</h3>
+                    <!-- search -->
+                    <form action="{{ url_for('booking_list') }}" method="post">
+                        <div class="form-group mr-3 mb-3">
+                            <label for="phone">Customer Phone:</label>
+                            <input type="text" class="form-control border rounded" id="phone" name="phone"
+                                   value="{{phone}}">
+                        </div>
+                        <div class="form-group mr-3 mb-3">
+                            <label for="name">Customer Name:</label>
+                            <input type="text" class="form-control border rounded" id="name" name="name"
+                                   value="{{name}}">
+                        </div>
+                        <div class="form-group mr-3 mb-3">
+                            <label for="email">Customer Email:</label>
+                            <input type="email" class="form-control border rounded" id="email" name="email"
+                                   value="{{email}}">
+                        </div>
+                        <div class="form-group mr-3 mb-3">
+                            <label for="equipment_name">Equipment Name:</label>
+                            <input type="text" class="form-control border rounded" id="equipment_name"
+                                   name="equipment_name"
+                                   value="{{equipment_name}}">
+                        </div>
+                        <div class="form-group mr-3 mb-3">
+                            <label for="status">Booking Status:</label>
+                            <select class="form-control border rounded" id="status" name="status">
+                                <option value="">Select Booking Status</option>
+                                <option value="unpaid">unpaid</option>
+                                <option value="paid">paid</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="default-btn">Search Booking</button>
+                    </form>
+                    {% if not booking_list and equipment %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Specifications</th>
+                                    <th>Cost</th>
+                                    <th>Image</th>
+                                    <th>Hire Cost</th>
+                                    <th>Min Hire Period</th>
+                                    <th>Max Hire Period</th>
+                                    <th>Serial Number</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in equipment %}
+                                <tr>
+                                    <td>{{ item[1] }}</td>
+                                    <td>{{ item[2]  }}</td>
+                                    <td>{{ item[3]  }}</td>
+                                    <td><img src="{{ url_for('static', filename='images/products/' ~ item[4] ) }}" alt="{{ item[1]  }}" width="50"></td>
+                                    <td>{{ item[5]  }}</td>
+                                    <td>{{ item[6]  }}</td>
+                                    <td>{{ item[7]  }}</td>
+                                    <td>{{ item[8]  }}</td>
+                                    <td>{{ item[9]  }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Customer Last Name</th>
+                                <th>Customer First Name</th>
+                                <th>Customer Email</th>
+                                <th>Customer Phone</th>
+                                <th>Equipment Name</th>
+                                <th>Booking Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for book in booking_list %}
+                            <tr>
+                                <td>{{ book[0] }}</td>
+                                <td>{{ book[1] }}</td>
+                                <td>{{ book[2] }}</td>
+                                <td>{{ book[3] }}</td>
+                                <td>{{ book[5] }}</td>
+                                <td>{{ book[9] }}</td>
+
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer-area">
+    <!-- Add your footer code here -->
+</footer>
+
+<div class="go-top">
+    <i class="ri-arrow-up-s-fill"></i>
+    <i class="ri-arrow-up-s-fill"></i>
+</div>
+
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/meanmenu.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/owl.carousel.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/wow.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/range-slider.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/form-validator.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/contact-form-script.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ajaxchimp.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+
+</body>
+</html>
+<script>
+$(document).ready(function() {
+    status="{{ status }}"
+
+    $('#status').val(status);
+});
+
+
+
+
+
+</script>
+
+{% endblock %}

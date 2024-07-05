@@ -1,0 +1,89 @@
+{% extends 'local/local_dashboard.html' %} {% block content %} {% with messages
+= get_flashed_messages(with_categories=true) %} {% if messages %} {% for
+category, message in messages %}
+<div class="alert alert-{{ category }}">* {{ message }}</div>
+{% endfor %} {% endif %} {% endwith %}
+
+<section class="dashboard-area ptb-54">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8" style="width: 100%">
+        <div class="cart-area recent-order">
+          <h3>Promotion Management</h3>
+
+          <div class="showing-result">
+            <div class="row align-items-center">
+              <div class="col-lg-6 col-md-6">
+                <div
+                  class="showing-top-bar-ordering"
+                  style="width: 300px; display: flex; align-items: center"
+                >
+                  <a
+                    href="/local/promotion_new"
+                    class="btn default-btn"
+                    style="padding: 10px; border-radius: 15px"
+                    ><span>&#43; New Promotion</span></a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cart-table table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col" style="width: 250px">Promotion Info</th>
+                  <th scope="col">Start Date</th>
+                  <th scope="col">End Date</th>
+                  <th scope="col">Discount</th>
+                  <th scope="col" colspan="2" style="text-align: center">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="promotion-table-body">
+                {% for promotion in promotions %}
+                <tr class="{{promotion[6]}}" id="{{promotion[6]}}">
+                  <td class="info">{{promotion[1]}}</td>
+                  <td class="start">{{promotion[2].strftime("%d/%m/%Y")}}</td>
+                  <td class="end">{{promotion[3].strftime("%d/%m/%Y")}}</td>
+                  <td class="disount">{{promotion[4]}}% OFF</td>
+
+                  <td style="width: 120px">
+                    <a
+                      href="/local/promotion_edit?promotion_id={{promotion[5]}}"
+                      class="btn default-btn"
+                      style="padding: 10px; border-radius: 15px"
+                      ><span>Edit</span></a
+                    >
+                  </td>
+                  <td class="trash">
+                    <a
+                      href="/local/promotion_cancel?promotion_id={{promotion[5]}}"
+                      class="remove"
+                    >
+                      <i class="ri-close-fill" onclick="showAlert(event)"></i>
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function showAlert(event) {
+    event.preventDefault(); // Prevent the default action (navigation)
+    if (confirm("Are you sure you want to cancel this promotion?")) {
+      window.location.href = event.currentTarget.parentElement.href;
+    }
+  }
+</script>
+
+{% endblock %}

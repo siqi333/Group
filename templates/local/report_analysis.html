@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f9;
+        }
+        .dashboard-container {
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .chart-container, .table-container {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .chart-container h2, .table-container h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .chart {
+            width: 100%;
+            height: 400px;
+        }
+        .small-chart {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        .logo {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .logo img {
+            max-width: 250px;
+            height: auto;
+        }
+        .center-title {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 2rem;
+            font-weight: 500;
+        }
+        table.table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #212529;
+        }
+        table.table th,
+        table.table td {
+            padding: .75rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
+        table.table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #dee2e6;
+        }
+        table.table tbody + tbody {
+            border-top: 2px solid #dee2e6;
+        }
+        table.table-hover tbody tr:hover {
+            color: #495057;
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+    </style>
+</head>
+<body>
+    <div class="container dashboard-container">
+        <div class="logo">
+            <a href="{{ url_for('local_dashboard') }}">
+                <img src="/static/images/logo.png" alt="AgriHire Solution Logo" />
+            </a>
+        </div>
+
+        <h3 class="center-title">{{ store_name }}</h3>
+
+        <div class="row chart-container">
+            <div class="col-md-12">
+                <h2>Monthly Revenue (2024)</h2>
+                <div class="chart">
+                    <canvas id="monthlyRevenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="row table-container">
+            <div class="col-md-6">
+                <h2>Top 5 Most Booked Equipment</h2>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Equipment</th>
+                            <th>Bookings</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for equipment in top_5_booked %}
+                            <tr>
+                                <td>{{ equipment[0] }}</td>
+                                <td>{{ equipment[1] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h2>Top 5 Longest Booking Periods by Equipment</h2>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Equipment</th>
+                            <th>Average Days</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for equipment in top_5_longest_booking %}
+                            <tr>
+                                <td>{{ equipment[0] }}</td>
+                                <td>{{ equipment[1]|round(2) }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row chart-container">
+            <div class="col-md-12">
+                <h2>Equipment Status</h2>
+                <div class="small-chart">
+                    <canvas id="equipmentStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Monthly Revenue Chart
+        const monthlyRevenueCtx = document.getElementById('monthlyRevenueChart').getContext('2d');
+        const monthlyRevenueLabels = {{ monthly_revenue_labels|tojson }};
+        const monthlyRevenueValues = {{ monthly_revenue_values|tojson }};
+        const monthlyRevenueChart = new Chart(monthlyRevenueCtx, {
+            type: 'line',
+            data: {
+                labels: monthlyRevenueLabels,
+                datasets: [{
+                    label: 'Revenue',
+                    data: monthlyRevenueValues,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: "rgba(200, 200, 200, 0.2)"
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: "rgba(200, 200, 200, 0.2)"
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: {
+                                family: 'Roboto'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                let value = context.raw || 0;
+                                return `${label}: ${value}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Equipment Status Pie Chart
+        const equipmentStatusCtx = document.getElementById('equipmentStatusChart').getContext('2d');
+        const equipmentStatusLabels = {{ equipment_status_labels|tojson }};
+        const equipmentStatusPercentages = {{ equipment_status_percentages|tojson }};
+        const equipmentStatusChart = new Chart(equipmentStatusCtx, {
+            type: 'pie',
+            data: {
+                labels: equipmentStatusLabels,
+                datasets: [{
+                    data: equipmentStatusPercentages,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: {
+                                family: 'Roboto'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                let value = context.raw || 0;
+                                let percentage = value.toFixed(2); // Ensure correct percentage calculation
+                                return `${label}: ${percentage}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

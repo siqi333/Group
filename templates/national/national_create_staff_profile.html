@@ -1,0 +1,122 @@
+{% extends 'national/national_dashboard.html' %}
+{% block content1 %}
+{% endblock %}
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} {% if category == 'error' %}text-danger{% endif %}">* {{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-lg">
+            <div class="card-header default-btn text-white">
+                <h3 class="mb-0">Create Staff Profile</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" class="submit-property-form" enctype="multipart/form-data" onsubmit="return validateForm()">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="username">Username (<span style="color: red;">required</span>)</label>
+                                <input type="text" class="form-control" id="username" name="username" required />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="password">Password (<span style="color: red;">required</span>)</label>
+                                <input type="password" class="form-control" id="password" name="password" required />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="confirm_password">Confirm Password (<span style="color: red;">required</span>)</label>
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="first_name">First Name (<span style="color: red;">required</span>)</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" required pattern="[A-Za-z ]+" title="Please enter only English alphabets" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="last_name">Last Name</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" pattern="[A-Za-z ]+" title="Please enter only English alphabets" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email" pattern="[^@]+@[^@]+\.[a-zA-Z]{2,}" title="Please enter a valid email address" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="text" class="form-control" id="phone" name="phone" pattern="\d{9,11}" title="Please enter a valid phone number" />
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <input type="text" class="form-control" id="address" name="address" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="store_id">Select Store (<span style="color: red;">required</span>)</label>
+                                <select class="form-control" id="store_id" name="store_id" required>
+                                    <option value="">-- Select Store --</option>
+                                    {% for store in stores %}
+                                    <option value="{{ store[0] }}">{{ store[1] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="UploadImage">Photo:</label>
+                                <input type="file" class="form-control-file" id="UploadImage" name="UploadImage" placeholder="Upload an image" />
+                                <img id="img" src="#" class="img-thumbnail mt-3" style="width: 100px; height: 100px; display: none;" />
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <button type="submit" class="btn default-btn btn-block">Create the Profile</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  document.getElementById("UploadImage").addEventListener("change", function (event) {
+      var file = event.target.files[0];
+      if (file) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+              var img = document.getElementById("img");
+              img.src = e.target.result;
+              img.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+      }
+  });
+
+  function validateForm() {
+      var password = document.getElementById("password").value;
+      var confirmPassword = document.getElementById("confirm_password").value;
+      if (password !== confirmPassword) {
+          alert("Passwords do not match.");
+          return false;
+      }
+      return true;
+  }
+</script>
+{% endblock %}

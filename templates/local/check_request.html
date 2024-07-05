@@ -1,0 +1,44 @@
+{% extends 'local/local_dashboard.html' %}{% block content1 %} {%
+endblock %} {% block content %}
+
+<section class="dashboard-area ptb-54">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8" style="width: 100%">
+        <div class="cart-area recent-order">
+          <h3>Equipment Request</h3>
+          <form class="cart-controller mb-0">
+            <div class="cart-table table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Equipment ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Equipment</th>
+                    <th scope="col">Reason</th>
+                    <th scope="col">Store</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for record in records %}
+                  <tr>
+                    <td class="equipment_id">{{record[0]}}</td>
+                    <td class="name">{{record[1]}}</td>
+                    <td class="email">{{record[2]}}</td>
+                    <td class="equipment">{{record[3]}}</td>
+                    <td class="reason">{{record[4]}}</td>
+                    <td class="store">{{record[5]}}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

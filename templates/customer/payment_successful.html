@@ -1,0 +1,29 @@
+{% extends 'customer/customer_dashboard.html' %} {% block content1 %} {%
+endblock %} {% block content %}
+
+<div class="order-area ptb-54">
+  <div class="container">
+    <div class="order-content pb-54">
+      <img src="/static/images/icon/check-mark.png" alt="Image" />
+      <h3>Thank you for your hiring</h3>
+      <span
+        >Your order number is: {% if order_number < 10 %} #00{{ order_number }}
+        {% elif order_number < 100 %} #0{{ order_number }} {% else %} #{{
+        order_number }} {% endif %}</span
+      >
+      <p>
+        You can check your
+        <a
+          style="color: blue"
+          href="/customer/receipt/details?booking_id={{order_number}}"
+          >Receipt</a
+        >
+        and your
+        <a style="color: blue" href="/customer/notification">Notification</a>
+      </p>
+      <a href="/customer/booking" class="default-btn"> My Booking </a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

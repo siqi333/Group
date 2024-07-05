@@ -1,0 +1,246 @@
+{% extends 'customer/customer_dashboard.html' %} {% block content1 %} {%
+endblock %} {% block content %}
+
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<section class="cart-area ptb-54">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-9">
+        <form
+          class="cart-controller"
+          id="cart-controller"
+          action="/customer/payment"
+          method="POST"
+        >
+          <div class="cart-table table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">Product</th>
+                  <th scope="col"></th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <input
+                    type="hidden"
+                    name="equipment_id"
+                    value="{{extend[9]}}"
+                  />
+                  <input type="hidden" name="store_id" value="{{extend[5]}}" />
+                  <input
+                    type="hidden"
+                    name="start_date"
+                    value="{{extend[8]}}"
+                  />
+                  <input type="hidden" name="end_date" id="end_date" />
+
+                  <input type="hidden" name="quantity" value="{{extend[7]}}" />
+                  <input
+                    type="hidden"
+                    name="customer_id"
+                    value="{{customer_id}}"
+                  />
+
+                  <input type="hidden" name="total_cost" id="total_cost" />
+                  <input type="hidden" name="total" id="total" />
+
+                  <td class="product-thumbnail">
+                    <img
+                      src="/static/images/products/{{extend[1]}}"
+                      alt="Image"
+                    />
+                  </td>
+                  <td class="product-name">
+                    {{extend[0]}}
+                    <br /><small>{{extend[6]}}</small>
+                  </td>
+                  <td class="product-price">
+                    <span class="amount">${{extend[2]}}</span>
+                  </td>
+                  <td class="product-quantity" style="text-align: center">
+                    <span class="quantity">{{extend[7]}}</span>
+                  </td>
+
+                  <td class="product-subtotal">
+                    <span
+                      class="subtotal"
+                      name="total_amount-display"
+                      id="total_amount-display"
+                    ></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Hire Period:</td>
+                  <td class="days" style="text-align: center">
+                    <input
+                      type="date"
+                      name="start-date"
+                      id="start-date"
+                      value="{{extend[8]}}"
+                      disabled
+                    />
+                    -
+                    <input
+                      type="date"
+                      name="end-date-display"
+                      id="end-date-display"
+                      style="width: 120px"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </form>
+        <div class="coupon-cart">
+          <div class="row"></div>
+        </div>
+      </div>
+
+      <div class="col-lg-3">
+        <div class="cart-totals">
+          <h3 class="cart-checkout-title">Cart Totals</h3>
+          <ul>
+            <li>Subtotal <span class="total-display">$0.00 </span></li>
+            <li>Shipping <span>$0.00</span></li>
+            <li>
+              <b>Payable Total</b>
+              <span><b class="total-display">$0.00</b></span>
+            </li>
+          </ul>
+          <button type="submit" class="default-btn" id="checkout-button">
+            Proceed to checkout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const startDateInput = document.getElementById("start-date");
+    const endDateInput = document.getElementById("end-date-display");
+    const endDateTransform = document.getElementById("end_date");
+    const price = parseFloat("{{extend[2]}}");
+    const quantity = parseInt("{{extend[7]}}", 10);
+    const minHirePeriod = parseInt("{{extend[3]}}", 10);
+    const maxHirePeriod = parseInt("{{extend[4]}}", 10);
+    const subtotalElement = document.getElementById("total_amount-display");
+    const totalElement = document.querySelectorAll(".total-display");
+    const totalAmountTransform = document.getElementById("total_cost");
+    const totalTransform = document.getElementById("total");
+    // Set the minimum value for the start date as today
+    startDateInput.setAttribute("min", startDateInput.value);
+    endDateInput.placeholder = "dd/mm/yyyy";
+
+    function formatDateString(dateString) {
+      const date = new Date(dateString);
+
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const year = date.getFullYear();
+
+      return `${day}-${month}-${year}`;
+    }
+
+    const booked_dates = JSON.parse(`{{ booked_dates | tojson | safe }}`);
+    console.log(booked_dates);
+    const endDatePicker = flatpickr(endDateInput, {
+      dateFormat: "m/d/Y",
+    });
+
+    function updateEndDateLimits() {
+      const selectedStartDate = new Date(startDateInput.value);
+
+      if (booked_dates.length >= 2) {
+        const minDated = new Date(startDateInput.value);
+        selectedStartDate.setDate(selectedStartDate.getDate() - 1);
+        endDatePicker.set({
+          minDate: minDated,
+          disable: [{ from: selectedStartDate, to: "30-12-2025" }],
+        });
+      } else if (selectedStartDate) {
+        const maxDated = new Date(startDateInput.value);
+        selectedStartDate.setDate(selectedStartDate.getDate() + minHirePeriod);
+        maxDated.setDate(maxDated.getDate() + maxHirePeriod);
+        endDatePicker.set({
+          minDate: selectedStartDate,
+          maxDate: maxDated,
+          disable: [{}],
+        });
+        // Check if the current end date is out of the new range
+        const currentEndDate = new Date(endDateInput.value);
+        // if (currentEndDate < minEndDate || currentEndDate > maxEndDate) {
+        //   // Reset the end date if it's out of range
+        //   endDateInput.value = minEndDateStr;
+        // }
+      }
+    }
+
+    function calculateTotal() {
+      if (endDateInput.value) {
+        const endDate = new Date(endDateInput.value);
+        const startDate = new Date(startDateInput.value);
+
+        const endDateUTC = new Date(
+          Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate())
+        );
+        const startDateUTC = new Date(
+          Date.UTC(
+            startDate.getFullYear(),
+            startDate.getMonth(),
+            startDate.getDate()
+          )
+        );
+
+        const timeDiff = endDateUTC - startDateUTC;
+        console.log(timeDiff);
+        const daysDiff = Math.floor(timeDiff / (24 * 60 * 60 * 1000));
+        const totalAmount = quantity * price * daysDiff;
+        subtotalElement.textContent = "$" + totalAmount.toFixed(2);
+        subtotalElement.value = totalAmount.toFixed(2);
+        totalElement.forEach(
+          (each) => (each.textContent = "$" + totalAmount.toFixed(2))
+        );
+
+        const dateParts = endDateInput.value.split("/");
+        const year = dateParts[2];
+        const month = dateParts[0].padStart(2, "0"); // 补齐月份的零
+        const day = dateParts[1].padStart(2, "0"); // 补齐日期的零
+
+        const formattedDate = `${year}-${month}-${day}`;
+
+        endDateTransform.value = formattedDate;
+        totalAmountTransform.value = totalAmount;
+        totalTransform.value = totalAmount;
+      }
+    }
+
+    // Add event listener to start date input to update end date's min and max attributes
+    endDateInput.addEventListener("click", updateEndDateLimits);
+    endDateInput.addEventListener("change", calculateTotal);
+
+    document
+      .getElementById("checkout-button")
+      .addEventListener("click", function () {
+        if (!endDateInput.value) {
+          alert("Please select an end date.");
+          event.preventDefault();
+          return;
+        }
+        document.getElementById("cart-controller").submit();
+      });
+  });
+</script>
+
+{% endblock %}

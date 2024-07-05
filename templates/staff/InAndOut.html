@@ -1,0 +1,201 @@
+{% extends 'staff/staff_dashboard.html' %}{% block content %}
+
+
+
+<section class="dashboard-area ptb-54">
+  <div class="container">
+    <h2>{{day}}</h2>
+    <div style="margin-top: 20px;">
+        <div>
+          <div>
+            <div
+              class="showing-top-bar-ordering"
+              style="width: 200px; display: flex; align-items: center"
+            >
+              <span>Date: </span>
+              <input
+                 type="date"
+                 id="selectDate"
+                aria-label="Default select example"
+                style="flex: 1; margin-left: 20px"
+              />
+            </div>
+
+
+    <div class="row">
+      <div class="col-lg-8" style="width: 100%; margin-top: 20px">
+        <div class="cart-area recent-order">
+          <h3>Pick Up</h3>
+          <form class="cart-controller mb-0">
+            <div class="cart-table table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr style="text-align: center">
+                    <th scope="col"></th>
+                    <th scope="col">Order Num</th>
+                    <th scope="col" style="text-align: center">
+                      Equipment Name
+                    </th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if pickUps %} {% for pickup in pickUps %}
+                  <tr style="text-align: center">
+                    <td class="product-thumbnail">
+                      <img
+                        src="/static/images/products/{{pickup[5]}}"
+                        alt="Image"
+                        style="width: 58px; height: 58px"
+                      />
+                    </td>
+                    <td class="order"> {% if pickup[0] < 10 %} #00{{ pickup[0] }} {% elif
+                        pickup[0] < 100 %} #0{{ pickup[0] }} {% else %} #{{
+                            pickup[0] }} {% endif %}</td>
+                    <td class="equipment">{{pickup[4]}}</td>
+
+                    <td class="pick">{{pickup[3]}}</td>
+                    <td
+                      class="action"
+                      style="text-align: center; vertical-align: middle"
+                    >
+                      {% if pickup[1] == none %}
+                      <a
+                        href="/staff/equipment_pickup?record_id={{pickup[6]}}&day={{day}}"
+                        class="btn default-btn"
+                        style="
+                          padding: 10px;
+                          border-radius: 15px;
+                          width: 100px;
+                          height: 40px;
+                          display: inline-block;
+                        "
+                        onclick="return confirmPick()"
+                        ><span>Pick Up</span></a
+                      >
+                      {% else %} {{pickup[1]}} {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %} {% else %}
+                  <tr>
+                    <td colspan="5" style="text-align: center">
+                      <h3>No equipment pick up Today!</h3>
+                    </td>
+                  </tr>
+                  {% endif %}
+                </tbody>
+              </table>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-lg-8" style="width: 100%; margin-top: 20px">
+        <div class="cart-area recent-order">
+          <h3>Return</h3>
+          <form class="cart-controller mb-0">
+            <div class="cart-table table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr style="text-align: center">
+                    <th scope="col"></th>
+                    <th scope="col">Order Num</th>
+                    <th scope="col" style="text-align: center">
+                      Equipment Name
+                    </th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if returns %} {% for return in returns %}
+                  <tr style="text-align: center">
+                    <td class="product-thumbnail">
+                      <img
+                        src="/static/images/products/{{return[5]}}"
+                        alt="Image"
+                        style="width: 58px; height: 58px"
+                      />
+                    </td>
+                    <td class="order">   {% if return[0] < 10 %} #00{{ return[0] }} {% elif
+                        return[0] < 100 %} #0{{ return[0] }} {% else %} #{{
+                            return[0] }} {% endif %}</td>
+                    <td class="equipment">{{return[4]}}</td>
+
+                    <td class="pick">{{return[3]}}</td>
+                    <td
+                      class="action"
+                      style="text-align: center; vertical-align: middle"
+                    >
+                      {% if return[1] == none %}
+                      <a
+                        href="/staff/equipment_return?record_id={{return[6]}}&day={{day}}"
+                        class="btn default-btn return"
+                        style="
+                          padding: 10px;
+                          border-radius: 15px;
+                          width: 100px;
+                          height: 40px;
+                          display: inline-block;
+                        "
+                        onclick="return {% if return[7] == none %} notreturn(event) {% else %} confirmReturn(){% endif %};"
+                        ><span>Return</span></a
+                      >
+                      {% else %} {{return[1]}} {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %} {% else %}
+                  <tr>
+                    <td colspan="5" style="text-align: center">
+                      <h3>No equipment return Today!</h3>
+                    </td>
+                  </tr>
+                  {% endif %}
+                </tbody>
+              </table>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<script>
+
+    const selectedDay = document.getElementById('selectDate')
+    
+    selectedDay.value = '';
+
+    selectedDay.addEventListener('input',function(){
+        const day = this.value
+    
+        window.location.href = `/staff/in_and_out?day=${day}`;
+    })
+    
+
+    function confirmPick(){
+
+        if(confirm('You want to check out this equipment?')){
+            return true
+        }
+        else{return false}
+    }
+
+    function confirmReturn(){
+
+        if(confirm('You want to check in this equipment?')){
+            return true
+        }
+        else{return false}
+    }
+
+
+    function notreturn(e){
+      e.preventDefault()
+      alert('This equipment is not picked up yet, can not process this action.')
+     
+    }
+    </script>
+{% endblock %}

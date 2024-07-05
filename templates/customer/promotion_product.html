@@ -1,0 +1,117 @@
+{% extends 'customer/customer_dashboard.html' %} {% block content1 %} {%
+endblock %} {% block content %}
+
+<section class="featured-products-area ptb-54">
+  <div class="container">
+    <div class="section-title">
+      <h1>{{store_name}}</h1>
+    </div>
+
+    <div class="showing-result">
+      <div class="row align-items-center">
+        <div class="col-lg-6 col-md-6">
+          <div
+            class="showing-top-bar-ordering"
+            style="width: 300px; display: flex; align-items: center"
+          >
+            <span>Equipment: </span>
+            <select
+              id="store-select"
+              class="form-select"
+              aria-label="Default select example"
+              style="flex: 1; margin-left: 20px"
+            >
+              <option selected value="All">Select Equipment</option>
+              {% for category in categorys %}
+              <option value="{{category[0]}}">{{category[1]}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      {% for product in products %}
+
+      <div
+        class="col-xl-3 col-sm-6"
+        data-store-id="{{product[5]}}"
+        id="product-info"
+      >
+        <div class="single-products">
+          <div class="product-img">
+            <a
+              href="/customer/promotion_details?store_id={{product[3]}}&equipment_id={{product[0]}}&promotion_id={{promotion_id}}"
+            >
+              <div style="display: flex; justify-content: center">
+                <img
+                  src="/static/images/products/{{product[2]}}"
+                  alt="Image"
+                  style="width: 75%; height: 75%"
+                />
+              </div>
+            </a>
+          </div>
+          <div class="product-content">
+            <a href="product-details.html" class="title"> {{product[1]}} </a>
+
+            <ul class="products-rating">
+              <li style="color: black">
+                Hire Rate from <small>(Incl. GST)</small>
+              </li>
+            </ul>
+
+            <ul class="products-price">
+              <li style="font-size: 25px">
+                ${{product[6]}}
+                <del style="font-size: 15px">${{product[4]}}</del>
+              </li>
+            </ul>
+            <ul class="products-cart-wish-view">
+              <li>
+                <a
+                  href="/customer/promotion_details?store_id={{product[3]}}&equipment_id={{product[0]}}&promotion_id={{promotion_id}}"
+                  class="default-btn"
+                >
+                  <i class="ri-shopping-cart-line"></i>
+                  Hire
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {% endfor %}
+
+      <div class="col-12">
+        <div class="pagination-area text-center"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document
+    .getElementById("store-select")
+    .addEventListener("change", function () {
+      var selectedCategory = this.value;
+      var products = document.querySelectorAll("#product-info");
+
+      products.forEach(function (product) {
+        var productCategory = product.getAttribute("data-store-id");
+
+        if (
+          selectedCategory === "All" ||
+          selectedCategory === productCategory
+        ) {
+          product.style.display = "block";
+        } else {
+          product.style.display = "none";
+        }
+      });
+    });
+</script>
+
+{% endblock %}

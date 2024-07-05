@@ -1,0 +1,113 @@
+{% extends 'customer/customer_dashboard.html' %} {% block content1 %} {%
+	endblock %} {% block content %}
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Report Damage or Issue</title>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+		/>
+		<style>
+			body {
+				background-color: #f8f9fa;
+			}
+	
+			.report-container {
+				width: 80%;
+				max-width: 1000px;
+				margin: auto;
+				padding: 20px;
+				background-color: #fff;
+				border-radius: 10px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+				margin-top: 50px;
+			}
+	
+			.report-title {
+				text-align: center;
+				margin-bottom: 30px;
+			}
+	
+			.report-form input,
+			.report-form textarea,
+			.report-form button {
+				width: 100%;
+				padding: 10px;
+				margin-bottom: 20px;
+				border: 1px solid #ced4da;
+				border-radius: 5px;
+			}
+	
+			.report-form input:focus,
+			.report-form textarea:focus {
+				outline: none;
+				border-color: #007bff;
+			}
+	
+			.report-form button {
+				background-color: #007bff;
+				color: #fff;
+				cursor: pointer;
+				transition: background-color 0.2s;
+			}
+	
+			.report-form button:hover {
+				background-color: #0056b3;
+			}
+
+			.flash-messages {
+				width: 80%;
+				max-width: 1000px;
+				margin: 20px auto;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="flash-messages">
+			{% with messages = get_flashed_messages(with_categories=true) %}
+				{% if messages %}
+					<div class="alert-container">
+						{% for category, message in messages %}
+							<div class="alert alert-{{ category }}">{{ message }}</div>
+						{% endfor %}
+					</div>
+				{% endif %}
+			{% endwith %}
+		</div>
+
+		<div class="report-container">
+			<h1 class="report-title">Report Damage or Issue</h1>
+			<form class="report-form" action="/customer/report_equipment" method="post" enctype="multipart/form-data">
+				<label for="name">Your Name:</label>
+				<input type="text" id="name" name="name" required><br><br>
+	
+				<label for="email">Your Email:</label>
+				<input type="email" id="email" name="email" required><br><br>
+	
+				<label for="equipment">Equipment:</label>
+				<input type="text" id="equipment" name="equipment" required><br><br>
+	
+				<label for="description">Description of Issue:</label><br>
+				<textarea id="description" name="description" rows="4" cols="50" required></textarea><br><br>
+	
+				<label for="photo">Upload Photo (optional):</label>
+				<input type="file" id="photo" name="photo" accept="image/*"><br><br>
+
+				<label for="store">Preferred Store:</label>
+			    <select id="store" name="store" class="form-control" required>
+				    {% for store in stores %}
+				    <option value="{{ store }}">{{ store }}</option>
+				    {% endfor %}
+			    </select><br><br>
+	
+			<button type="submit">Submit Report</button>
+		</form>
+	</div>
+</body>
+
+</html>
+{% endblock %}
+	

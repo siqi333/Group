@@ -1,0 +1,232 @@
+{% extends 'customer/customer_dashboard.html' %} {% block content1 %} {%
+endblock %} {% block content %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Equipment Hire Payment</title>
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+
+      .payment-container {
+        max-width: 500px;
+        min-height: 500px;
+        margin: auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 50px;
+      }
+
+      .payment-title {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .select-min-height {
+        min-height: 40px;
+      }
+
+      .payment-form input,
+      .payment-form select,
+      .payment-form button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+      }
+
+      .payment-form input:focus,
+      .payment-form select:focus {
+        outline: none;
+        border-color: #007bff;
+      }
+
+      .payment-form button,
+      .home-button {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        text-align: center;
+        display: block;
+        /* Ensure the button stretches to the width of its container */
+        margin-bottom: 20px;
+        /* Consistent spacing */
+      }
+
+      .home-button {
+        background-color: #28a745;
+        /* Separate color for the home button */
+      }
+
+      .home-button:hover {
+        background-color: #007bff;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <section class="checkout-area ptb-54">
+      <div class="container">
+        <form
+          class="payment-form"
+          action="{{ url_for('customer_payment_successful') }}"
+          method="post"
+          autocomplete="off"
+          enctype="multipart/form-data"
+        >
+          <input type="hidden" name="booking_id" value="{{booking_id}}" />
+          <input type="hidden" name="total_cost" value="{{total_cost}}" />
+
+          <div class="row">
+            <div class="col-lg-8 col-md-12">
+              <form>
+                <div class="billing-details">
+                  <h3 class="title">Billing Details</h3>
+                  <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                      <div class="form-group">
+                        <label
+                          >First Mame <span class="required">*</span></label
+                        >
+                        <input
+                          type="text"
+                          name="firstname"
+                          class="form-control"
+                          pattern="[A-Za-z ]+"
+                          title="Please enter only English alphabets and spaces"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                      <div class="form-group">
+                        <label>Last Name <span class="required">*</span></label>
+                        <input
+                          type="text"
+                          name="lastname"
+                          class="form-control"
+                          pattern="[A-Za-z]+"
+                          title="Please enter only English alphabets"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                      <div class="form-group">
+                        <label
+                          >Card Number <span class="required">*</span></label
+                        >
+                        <input
+                          type="text"
+                          name="card_number"
+                          class="form-control"
+                          pattern="\d{16}"
+                          title="Please enter 16 digit card number"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                      <div class="form-group">
+                        <label
+                          >Card Expired Date
+                          <span class="required">*</span></label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="card_expire_day"
+                          name="card_expire_day"
+                          pattern="(0[1-9]|1[0-2])\/\d{2}"
+                          title="Please enter the card expiration date in mm/yy format."
+                          placeholder="mm/yy"
+                          required
+                          oninput="validateExpirationDate(this)"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                      <div class="form-group">
+                        <label>CVV <span class="required">*</span></label>
+                        <input
+                          type="text"
+                          name="cvc"
+                          class="form-control"
+                          pattern="\d{3}"
+                          title="Please enter 3 digit valid card CVV"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-lg-4 col-md-12">
+              <div class="order-details ml-15">
+                <div class="cart-totals mb-0">
+                  <h3>Totals</h3>
+                  <ul>
+                    <li>Subtotal <span>${{total_cost}}</span></li>
+
+                    <li>
+                      <b>Payable Total</b>
+                      <span><b>${{total_cost}}</b></span>
+                    </li>
+                  </ul>
+                  <div class="faq-accordion">
+                    <ul class="accordion">
+                      <li class="place-order">
+                        <button type="submit" class="btn btn-primary">
+                          Submit Payment
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <script>
+      function validateExpirationDate(input) {
+        var today = new Date();
+        var inputParts = input.value.split("/");
+        var inputMonth = parseInt(inputParts[0], 10);
+        var inputYear = parseInt(inputParts[1], 10);
+
+        if (
+          inputYear < today.getFullYear() - 2000 ||
+          (inputYear === today.getFullYear() - 2000 &&
+            inputMonth < today.getMonth() + 1)
+        ) {
+          input.setCustomValidity("Please input a correct expire day.");
+        } else {
+          input.setCustomValidity("");
+        }
+      }
+    </script>
+  </body>
+</html>
+
+{% endblock %}

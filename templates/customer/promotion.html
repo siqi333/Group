@@ -1,0 +1,174 @@
+{% extends 'customer/customer_dashboard.html' %} {% block content1 %} {%
+endblock %} {% block content %}
+
+<section class="dashboard-area ptb-54">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8" style="width: 100%">
+        <div class="cart-area recent-order">
+          <h3>Promotion Details</h3>
+
+          <div class="showing-result">
+            <div class="row align-items-center">
+              <div class="col-lg-6 col-md-6">
+                <div
+                  class="showing-top-bar-ordering"
+                  style="width: 300px; display: flex; align-items: center"
+                >
+                  <span>Store: </span>
+                  <select
+                    id="store-select"
+                    class="form-select"
+                    aria-label="Default select example"
+                    style="flex: 1; margin-left: 20px"
+                  >
+                    <option selected value="all">Select Store</option>
+
+                    {% for store in stores %}
+                    <option value="{{store[0]}}">{{store[1]}}</option>
+
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <section class="hero-slider-area hero-slider-area-style-three">
+            <div class="container">
+              <div class="row">
+                {% for promotion in promotions %}
+                <div
+                  class="col-lg-3 promotion-item"
+                  style="margin-top: 20px"
+                  data-store="{{promotion[6]}}"
+                  data-start="{{promotion[3]}}"
+                  data-end="{{promotion[4]}}"
+                >
+                  <a
+                    href="/customer/promotion_product?store_id={{promotion[6]}}&promotion_id={{promotion[0]}}"
+                  >
+                    <div
+                      class="offer-tools"
+                      style="
+                      background-image: url(../../static/images/offer-tools-{{promotion[0]}}.jpg);
+                      width: 100%;height: 220px;
+                    "
+                    >
+                      {% if promotion[0] == 2 %}
+                      <h3 class="ffffff" style="padding-left: 60px">
+                        {{promotion[2]}}
+                      </h3>
+                      {% elif promotion[0] == 3 %}
+                      <p></p>
+                      {% elif promotion[0] == 4 %}
+                      <p></p>
+                      {% else %}
+                      <h3 class="ffffff">{{promotion[2]}}</h3>
+                      {% endif %} {% if promotion[0] == 2 %}
+                      <h4 style="padding-left: 60px">{{promotion[5]}}% Off</h4>
+                      {% elif promotion[0] == 3 %}
+                      <p></p>
+                      {% elif promotion[0] == 4 %}
+                      <p></p>
+                      {% else %}
+                      <h4>{{promotion[5]}}% Off</h4>
+                      {% endif %} {% if promotion[0] == 2 %}
+                      <p style="color: black; padding-left: 60px">
+                        {{promotion[3].strftime("%d/%m")}} -
+                        {{promotion[4].strftime("%d/%m")}}
+                      </p>
+                      {% elif promotion[0] == 3 %}
+                      <div style="padding-top: 100px">
+                        <p style="color: black; margin: 0">{{promotion[2]}}</p>
+                        <h4>{{promotion[5]}}% Off</h4>
+                        <p style="color: black">
+                          {{promotion[3].strftime("%d/%m")}} -
+                          {{promotion[4].strftime("%d/%m")}}
+                        </p>
+                      </div>
+                      {% elif promotion[0] == 4 %}
+                      <div style="padding-top: 80px">
+                        <p style="color: white; margin: 0">{{promotion[2]}}</p>
+                        <h4 style="color: white">{{promotion[5]}}% Off</h4>
+                        <p style="color: white">
+                          {{promotion[3].strftime("%d/%m")}} -
+                          {{promotion[4].strftime("%d/%m")}}
+                        </p>
+                      </div>
+                      {% else %}
+                      <p style="color: black">
+                        {{promotion[3].strftime("%d/%m")}} -
+                        {{promotion[4].strftime("%d/%m")}}
+                      </p>
+                      {% endif %}
+                    </div>
+                  </a>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <h3
+              id="no-promotion-info"
+              style="
+                display: none;
+                text-align: center;
+                padding: 20px;
+                color: black;
+              "
+            >
+              No promotion info Found.
+            </h3>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document
+    .getElementById("store-select")
+    .addEventListener("change", function () {
+      var selectedStore = this.value;
+      var promotionItems = document.querySelectorAll(".promotion-item");
+      var noPromotionInfo = document.getElementById("no-promotion-info");
+
+      let hasPromotion = false;
+      promotionItems.forEach(function (item) {
+        if (
+          selectedStore === "all" ||
+          item.getAttribute("data-store") === selectedStore
+        ) {
+          item.style.display = "";
+          hasPromotion = true;
+        } else {
+          item.style.display = "none";
+        }
+      });
+      if (hasPromotion) {
+        noPromotionInfo.style.display = "none";
+      } else {
+        noPromotionInfo.style.display = "block";
+      }
+    });
+
+  const promotionItems = document.querySelectorAll(".promotion-item");
+  const today = new Date().toISOString().split("T")[0];
+  promotionItems.forEach(function (each) {
+    const start = each.getAttribute("data-start");
+    const end = each.getAttribute("data-end");
+    each.addEventListener("click", function (e) {
+      if (start > today) {
+        e.preventDefault();
+        alert("The Promotion will coming soon!");
+      } else if (end < today) {
+        e.preventDefault();
+        alert("Sorry,The promotion is closed");
+      }
+    });
+  });
+</script>
+
+{% endblock %}

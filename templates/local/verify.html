@@ -1,0 +1,56 @@
+{% extends 'local/local_dashboard.html' %}{% block content1 %} {%
+endblock %} {% block content %}
+
+<div class="order-tracking ptb-54">
+  <div class="container">
+    <div class="order-tracking">
+      <h3>Verify Customer</h3>
+      <form action="/local/verify" method="POST" id="search_form">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="form-group">
+              <label>Booking Number</label>
+              <input
+                type="text"
+                class="form-control"
+                name="booking_id"
+                id="booking_id"
+              />
+              <span id="error_message" style="color: red;"></span>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <button type="submit" class="default-btn" id="search_button">
+              Search
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const search_form = document.getElementById("search_form");
+  const booking_id = document.getElementById("booking_id");
+  const error_message = document.getElementById("error_message");
+
+  search_form.addEventListener("submit", function (e) {
+    error_message.textContent = ""; // Clear any previous error message
+
+    if (!booking_id.value.trim()) {
+      error_message.textContent = "Please enter the booking number.";
+      e.preventDefault();
+      return;
+    }
+
+    // Check if the input is a valid number
+    if (!(/^\d+$/.test(booking_id.value.trim()))) {
+      error_message.textContent = "Invalid booking number. Please enter a valid number.";
+      e.preventDefault();
+      return;
+    }
+  });
+</script>
+
+{% endblock %}

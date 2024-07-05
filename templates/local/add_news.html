@@ -1,0 +1,58 @@
+{% extends 'local/local_dashboard.html' %} {% block content %} {% with messages
+= get_flashed_messages(with_categories=true) %} {% if messages %} {% for
+category, message in messages %}
+<div class="alert alert-{{ category }}">* {{ message }}</div>
+{% endfor %} {% endif %} {% endwith %}
+
+<section class="dashboard-area ptb-54">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="edit-profile">
+          <h3>News Publisher</h3>
+
+          <form
+            method="POST"
+            class="submit-property-form"
+            action="/local/add_news"
+          >
+            <input hidden name="store_id" value="{{store_id}}" />
+
+            <div class="row">
+              <div class="col-lg-6" style="width: 700px">
+                <div class="form-group">
+                  <label>News Title</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="title"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>News Content</label>
+                  <textarea
+                    class="form-control"
+                    name="content"
+                    rows="10"
+                    cols="20"
+                    required
+                  ></textarea>
+                </div>
+              </div>
+
+              <div class="col-lg-12">
+                <button type="submit" class="default-btn">Publish</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

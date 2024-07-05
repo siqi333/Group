@@ -1,0 +1,420 @@
+{% extends 'customer/customer_dashboard.html' %} {% block content1 %} {%
+  endblock %} {% block content %}
+
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+
+    <section class="product-details-area ptb-54">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="product-view-one">
+            <div class="modal-content p-0">
+              <div class="row align-items-center">
+                <div class="col-lg-6">
+                  <div class="product-view-one-image">
+                    <div id="big" class="owl-carousel owl-theme">
+                      <div class="item">
+                        <img
+                          src="/static/images/products/{{details[2]}}"
+                          alt="Image"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-6">
+                  <form action="/customer/shopping_cart" method="post" id="myForm">
+                    <div class="product-content ml-15">
+                      <input
+                        value="{{equipment_id}}"
+                        name="equipment_id"
+                        hidden
+                      />
+                      <input value="{{store_id}}" name="store_id" hidden />
+                      <input value="{{details[2]}}" name="image" hidden />
+                      <input
+                        value="{{details[0]}}"
+                        name="equipment_name"
+                        hidden
+                      />
+                      <input value="{{details[3]}}" name="price" hidden />
+                      <h3>{{details[0]}}</h3>
+
+                      <div class="price">
+                        <span class="new-price">${{details[3]}}/Day <small>(Incl. GST)</small></span>
+                        <span class="in-stock"
+                          >In Stock ({{details[6]}} Items)</span
+                        >
+                      </div>
+                      <ul class="product-info">
+                        <li>
+                          <p>{{details[1]}}</p>
+                        </li>
+                        <li>
+                          <span>Min Hire Day:</span>
+                          {{details[4]}} Day
+                        </li>
+                        <li>
+                          <span>Max Hire Day:</span>
+                          {{details[5]}} Days
+                        </li>
+                        <li>
+                          <span>Brand:</span>
+                          Sany
+                        </li>
+                        <li>
+                          <span>Categories:</span>
+                          <a href="/customer/product?category={{details[7]}}"
+                            >{{details[8]}}</a
+                          >
+                        </li>
+
+                        <li>
+                          <span>Start Date:</span>
+                          <input
+                            type="text"
+                            id="start-date"
+                            name="start-date"
+                            style="width: 120px;"
+                            required
+                            title="please select start date"
+                          />
+                        </li>
+                        <li>
+                          <span for="end-date">End Date:</span>
+                          <input
+                            type="text"
+                            id="end-date"
+                            name="end-date"
+                            style="width: 120px;"
+                            required
+                            title="please select end date"
+                          />
+                        </li>
+                      </ul>
+
+                      <div class="product-add-to-cart">
+                        <div class="input-counter">
+                          <span class="minus-btn">
+                            <i class="ri-add-line"></i>
+                          </span>
+
+                          <input
+                            type="text"
+                            value="1"
+                            id="quantity"
+                            name="quantity"
+                          />
+
+                          <span class="plus-btn">
+                            <i class="ri-subtract-line"></i>
+                          </span>
+                        </div>
+
+                        <button type="submit" class="default-btn" data-process ={{no_process}}>
+                          <i class="ri-shopping-cart-line"></i>
+                          Add To Cart
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </section>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+
+        //Date section
+        const startDateInput = document.getElementById("start-date");
+        const endDateInput = document.getElementById("end-date");
+
+        startDateInput.placeholder = 'dd/mm/yyyy';
+        endDateInput.placeholder = 'dd/mm/yyyy';
+
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+  
+        const minHireDays = parseInt("{{details[4]}}", 10);
+        const maxHireDays = parseInt("{{details[5]}}", 10);
+
+        const booked_dates = JSON.parse('{{ booked_dates | tojson | safe }}');
+   
+        const quantityInput = document.getElementById("quantity");
+        const itemMaxQuantity = parseInt("{{details[6]}}");
+        
+        function formatDateString(dateString) {
+        const date = new Date(dateString);
+
+        const day = String(date.getDate()).padStart(2, '0'); 
+        const month = String(date.getMonth() + 1).padStart(2, '0'); 
+        const year = date.getFullYear(); 
+
+        return `${day}-${month}-${year}`; }
+
+
+        const disableDates = booked_dates.map(each => {
+        return {
+          quantity:each[3],
+          from: formatDateString(each[1]),
+          to: formatDateString(each[2])
+        };
+      });
+
+      const startDatePicker = flatpickr("#start-date", { 
+        dateFormat: "d-m-Y",
+        minDate: new Date(tomorrow),
+      });
+        
+      const endDatePicker = flatpickr("#end-date", { 
+        dateFormat: "d-m-Y",
+      });
+
+
+      function updateQuantity(operation) {
+          let quantity = parseInt(quantityInput.value);
+          if (operation === "plus") {
+            quantity += 1;
+          } else if (operation === "minus") {
+            quantity -= 1;
+          }
+          quantity = Math.min(Math.max(quantity, 1), itemMaxQuantity);
+
+          quantityInput.value = quantity;
+        }
+
+        
+      
+      if(disableDates.length>0){
+
+        if(disableDates[0]['quantity'] === itemMaxQuantity){
+         
+            startDatePicker.set({disable:disableDates})
+            startDateInput.addEventListener('change',function(){
+
+    
+              const selectedDay = this.value
+              const [day, month, year] = selectedDay.split('-');
+              const dateObject = new Date(`${year}-${month}-${day}`);
+              const [dayFrom, monthFrom, yearFrom] = disableDates[0]['from'].split('-');
+              const dateFrom = new Date(`${yearFrom}-${monthFrom}-${dayFrom}`);
+
+              const [dayTo, monthTo, yearTo] = disableDates[0]['to'].split('-');
+              const dateTo= new Date(`${yearTo}-${monthTo}-${dayTo}`);
+
+              if(dateObject > dateTo){
+      
+                endDatePicker.set({minDate: dateObject.fp_incr(minHireDays),
+                                  maxDate: dateObject.fp_incr(maxHireDays),disable:[{}]})            
+              }
+              else {
+                endDatePicker.set({minDate:dateObject.fp_incr(1),
+                  maxDate:dateObject.fp_incr(maxHireDays),
+                  disable:[
+                {from:disableDates[0]['from'],
+                  to:'30-12-2025'
+                }
+              ]})}}
+        )}
+
+        else{
+
+          startDateInput.addEventListener('change',function(){
+        
+            const selectedDay = this.value
+            const [day, month, year] = selectedDay.split('-');
+            const dateObject = new Date(`${year}-${month}-${day}`);
+
+            endDatePicker.set({
+                        minDate: dateObject.fp_incr(minHireDays),
+                        maxDate: dateObject.fp_incr(maxHireDays)})
+      })}}
+
+      else{
+
+        
+            startDateInput.addEventListener('change',function(){
+            
+            const selectedDay = this.value
+            const [day, month, year] = selectedDay.split('-');
+            const dateObject = new Date(`${year}-${month}-${day}`);
+
+          endDatePicker.set({
+                      minDate: dateObject.fp_incr(minHireDays),
+                      maxDate: dateObject.fp_incr(maxHireDays)})
+      })}
+    
+
+      document
+          .querySelector(".minus-btn")
+          .addEventListener("click", function () {
+            updateQuantity("plus");
+            
+            const itemsHire =  Number(quantityInput.value) 
+
+            if(disableDates.length>0){
+              if(itemsHire + disableDates[0]['quantity'] > itemMaxQuantity){
+        
+                startDatePicker.set({
+                  disable:disableDates})
+                  startDateInput.addEventListener('change',function(){
+
+              const selectedDay = this.value
+              const [day, month, year] = selectedDay.split('-');
+              const dateObject = new Date(`${year}-${month}-${day}`);
+              const [dayFrom, monthFrom, yearFrom] = disableDates[0]['from'].split('-');
+              const dateFrom = new Date(`${yearFrom}-${monthFrom}-${dayFrom}`);
+
+              const [dayTo, monthTo, yearTo] = disableDates[0]['to'].split('-');
+              const dateTo= new Date(`${yearTo}-${monthTo}-${dayTo}`);
+
+              if(dateObject > dateTo){
+
+                endDatePicker.set({minDate: dateObject.fp_incr(minHireDays),
+                                  maxDate: dateObject.fp_incr(maxHireDays),disable:[{}]})            
+              }
+              else {
+                endDatePicker.set({minDate:dateObject.fp_incr(1),
+                  maxDate:dateObject.fp_incr(maxHireDays),
+                  disable:[
+                {from:disableDates[0]['from'],
+                  to:'30-12-2025'
+                }
+              ]})}}
+              )
+              }
+            }
+
+            else{
+
+        
+            startDateInput.addEventListener('change',function(){
+            
+            const selectedDay = this.value
+            const [day, month, year] = selectedDay.split('-');
+            const dateObject = new Date(`${year}-${month}-${day}`);
+
+          endDatePicker.set({
+                      minDate: dateObject.fp_incr(minHireDays),
+                      maxDate: dateObject.fp_incr(maxHireDays)})
+      })}
+
+      
+          });
+
+        document
+          .querySelector(".plus-btn")
+          .addEventListener("click", function () {
+            updateQuantity("minus");
+         
+            const itemsHire =  Number(quantityInput.value) 
+
+            if(disableDates.length>0){
+
+              if(itemsHire + disableDates[0]['quantity'] > itemMaxQuantity){
+   
+                startDatePicker.set({
+                  disable:disableDates})
+                  startDateInput.addEventListener('change',function(){
+
+    
+              const selectedDay = this.value
+              const [day, month, year] = selectedDay.split('-');
+              const dateObject = new Date(`${year}-${month}-${day}`);
+              const [dayFrom, monthFrom, yearFrom] = disableDates[0]['from'].split('-');
+              const dateFrom = new Date(`${yearFrom}-${monthFrom}-${dayFrom}`);
+
+              const [dayTo, monthTo, yearTo] = disableDates[0]['to'].split('-');
+              const dateTo= new Date(`${yearTo}-${monthTo}-${dayTo}`);
+
+              if(dateObject > dateTo){
+
+                endDatePicker.set({minDate: dateObject.fp_incr(minHireDays),
+                                  maxDate: dateObject.fp_incr(maxHireDays),disable:[{}]})            
+              }
+              else {
+
+                endDatePicker.set({minDate:dateObject.fp_incr(1),
+                  maxDate:dateObject.fp_incr(maxHireDays),disable:[
+                {from:disableDates[0]['from'],
+                  to:'30-12-2025'
+                }
+              ]})}}
+              )
+              }
+
+              else{
+        
+                startDatePicker.set({
+                  disable:[{}]})
+                  
+                  startDateInput.addEventListener('change',function(){
+                    
+                    const selectedDay = this.value
+                    const [day, month, year] = selectedDay.split('-');
+                    const dateObject = new Date(`${year}-${month}-${day}`);
+            
+                  endDatePicker.set({
+                              minDate: dateObject.fp_incr(minHireDays),
+                              maxDate: dateObject.fp_incr(maxHireDays),
+                            disable:[{}]})
+
+               })
+                  
+              }
+              }
+
+            else{
+            startDateInput.addEventListener('change',function(){
+            
+            const selectedDay = this.value
+            const [day, month, year] = selectedDay.split('-');
+            const dateObject = new Date(`${year}-${month}-${day}`);
+          endDatePicker.set({
+                      minDate: dateObject.fp_incr(minHireDays),
+                      maxDate: dateObject.fp_incr(maxHireDays)})
+  
+      })}
+          });
+
+
+
+      const addToCartBtn = document.querySelector('.default-btn')
+      
+      addToCartBtn.addEventListener("click", function(e) {
+
+       const noProcess = addToCartBtn.getAttribute('data-process');
+
+       if (noProcess === "0") {
+         alert("This item is already in your cart");
+         e.preventDefault();
+       } 
+       else if (!startDateInput.value) { 
+        alert("Please select a start date.");
+        event.preventDefault();
+        return; 
+      }
+      else if (!endDateInput.value) { 
+        alert("Please select an end date.");
+        event.preventDefault(); 
+        return; 
+      }
+       else {
+         addToCartBtn.closest("form").submit(); 
+       }
+         });
+    })
+    </script>
+
+    {% endblock %}
+
+  
+
+    

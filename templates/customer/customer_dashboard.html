@@ -1,0 +1,481 @@
+﻿<!DOCTYPE html>
+<html lang="zxx">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="/static/css/owl.theme.default.min.css" />
+
+    <link rel="stylesheet" href="/static/css/owl.carousel.min.css" />
+
+    <link rel="stylesheet" href="/static/css/remixicon.css" />
+
+    <link rel="stylesheet" href="/static/css/meanmenu.min.css" />
+
+    <link rel="stylesheet" href="/static/css/animate.min.css" />
+
+    <link rel="stylesheet" href="/static/css/style.css" />
+
+    <link rel="stylesheet" href="/static/css/responsive.css" />
+
+    <link rel="icon" type="image/png" href="/static/images/logo.png" />
+
+    <title>AgriHire Solution</title>
+  </head>
+  <body>
+    <div class="preloader">
+      <div class="content">
+        <div class="box"></div>
+      </div>
+    </div>
+
+    <header class="header-area">
+      <div class="middle-header middle-header-style-two">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-3">
+              <div class="logo">
+                <a href="/customer_dashboard">
+                  <img src="/static/images/logo.png" alt="Image" />
+                </a>
+              </div>
+            </div>
+
+            <div class="col-lg-5"></div>
+
+            <div class="col-lg-4">
+              <ul class="wish-cart">
+                <li>
+                  <a href="/customer/personal">
+                    <img
+                      src="/static/images/icon/register.jpg"
+                      style="width: 30px; height: 30px; margin-right: 10px"
+                    />
+                    Setting
+                  </a>
+                </li>
+                <li>
+                  <a href="/logout">
+                    <img
+                      src="/static/images/icon/login.png"
+                      style="width: 30px; height: 30px; margin-right: 10px"
+                    />
+                    Log out
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="navbar-area navbar-area-style-two">
+        <div class="desktop-nav">
+          <div class="container">
+            <nav class="navbar navbar-expand-md navbar-light">
+              <div class="navbar-category">
+                <button
+                  type="button"
+                  id="categoryButton"
+                  data-bs-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <i class="ri-menu-line"></i>
+                  ALL CATEGORIES
+                  <i class="arrow-down ri-arrow-down-s-line"></i>
+                </button>
+                <div
+                  class="navbar-category-dropdown dropdown-menu"
+                  aria-labelledby="categoryButton"
+                >
+                  <ul>
+                    {% for category in categorys %}
+                    <li>
+                      <a href="/customer/product?category={{category[0]}}"
+                        >{{category[1]}}</a
+                      >
+                    </li>
+
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+
+              <div
+                class="collapse navbar-collapse mean-menu"
+                id="navbarSupportedContent"
+              >
+                <ul class="navbar-nav">
+                  <li class="nav-item float-end">
+                    <a href="/customer_dashboard" class="nav-link active">
+                      Home
+                    </a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      My booking
+                      <i class="ri-arrow-down-s-line"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li class="nav-item">
+                        <a href="/customer/booking" class="nav-link">Booking</a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="/customer/prior_records" class="nav-link"
+                          >Prior Hiring Records</a
+                        >
+                      </li>
+
+                      <li class="nav-item">
+                        <a href="/customer/hiring_record" class="nav-link"
+                          >Hiring Record</a
+                        >
+                      </li>
+                      <li class="nav-item">
+                        <a href="/customer/receipt" class="nav-link"
+                          >My Receipt</a
+                        >
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      Message <i class="ri-arrow-down-s-line"></i>
+                    </a>
+
+                    <ul class="dropdown-menu">
+                      <li class="nav-item">
+                        <a href="/customer/contact" class="nav-link"
+                          >Feedback</a
+                        >
+                      </li>
+                      <li class="nav-item">
+                        <a href="/customer/feedback" class="nav-link"
+                          >Chat History</a
+                        >
+                      </li>
+                      <li class="nav-item">
+                        <a href="/customer/report_equipment" class="nav-link"
+                          >Damage Report</a
+                        >
+                      </li>
+                      <li class="nav-item">
+                        <a href="/customer/request_equipment" class="nav-link"
+                          >Equipment Request</a
+                        >
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li class="nav-item">
+                    <a href="/customer/shopping_cart" class="nav-link">
+                      My Cart
+                    </a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a href="/customer/news" class="nav-link">News</a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a href="/customer/promotion" class="nav-link"
+                      >Promotions</a
+                    >
+                  </li>
+                </ul>
+
+                {% block content1 %}
+                <div class="others-options">
+                  <span>Welcome, {{name[0]}} {{name[1]}}</span>
+                </div>
+                {% endblock %}
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    {% block content %}
+    <section class="hero-slider-area hero-slider-area-style-three">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-9">
+            <div class="hero-slider-two owl-carousel owl-theme">
+              <a href="/customer/news">
+                <div class="slider-item bg-9">
+                  <div class="d-table">
+                    <div class="d-table-cell">
+                      <div
+                        class="hero-slider-content"
+                        style="height: 180px; margin-left: 420px"
+                      >
+                        <h1>{{news[0]}}</h1>
+                        <span>{{news[2]}}</span>
+                        <span>{{news[1].strftime("%d/%m/%Y")}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div
+              class="offer-tools"
+              style="
+                background-image: url(../../static/images/offer-tools-19.jpg);
+              "
+            >
+              <p style="color: black">Reminder</p>
+
+              <a href="/customer/notification">
+                <div style="margin-left: 45px; margin-top: 30px">
+                  <p style="color: black; margin-bottom: 0">
+                    {{today.strftime("%d/%m/%Y")}}
+                  </p>
+
+                  {% for pick in pickups %} {% if pick[0] == today %}
+                  <div>
+                    <p style="color: black">
+                      You have {{pick[1]}} items
+                      <span style="color: green">pick up</span>
+                    </p>
+                  </div>
+                  {% endif %} {% endfor %} {% for back in returns %} {% if
+                  back[0] == today %}
+                  <div>
+                    <p style="color: black">
+                      You have {{back[1]}} items
+                      <span style="color: red">return</span>
+                    </p>
+                  </div>
+                  {% endif %} {% endfor %}
+                </div>
+              </a>
+            </div>
+
+            <a href="/customer/promotion" class="read-more">
+              <div
+                class="offer-tools bg-2"
+                style="
+                  background-image: url(../../static/images/offer-tools-18.jpg);
+                "
+              ></div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="popular-categories-area pt-54 pb-30">
+      <div class="container">
+        <div class="section-title">
+          <h2>All Categories</h2>
+        </div>
+
+        <div class="row justify-content-center">
+          {% for category in categorys %}
+          <div class="col-lg-2 col-sm-6 col-md-4">
+            <div class="single-popular-categories">
+              <a href="/customer/product?category={{category[0]}}">
+                <img src="/static/images/icon/{{category[2]}}" alt="Image" />
+                <span>{{category[1]}}</span>
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    {% endblock %}
+    <div
+      class="footer-area pt-54 pb-30"
+      style="background-color: rgb(244, 244, 244)"
+    >
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-3 col-sm-6">
+            <div class="single-footer-widget">
+              <h3>Quick Information</h3>
+              <ul class="info-list">
+                <li>
+                  <i class="ri-map-pin-line"></i>
+                  2491 Reel Avenue Albuquerque, NM
+                </li>
+                <li>
+                  <i class="ri-phone-line"></i>
+                  <a href="#">+1 (514) 321-4566</a>
+                </li>
+                <li>
+                  <i class="ri-mail-send-line"></i>
+                  <a href="#"
+                    ><span
+                      class="__cf_email__"
+                      data-cfemail="33565b524a73564b525e435f561d505c5e"
+                      >[email&#160;protected]</span
+                    ></a
+                  >
+                </li>
+                <li>
+                  <i class="ri-time-line"></i>
+                  Mon-Sat 8:00 AM - 8:00 PM
+                </li>
+              </ul>
+              <ul class="social-link">
+                <li>
+                  <span>Stay connected:</span>
+                </li>
+                <li>
+                  <a href="#" target="_blank">
+                    <i class="ri-facebook-fill"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" target="_blank">
+                    <i class="ri-twitter-fill"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" target="_blank">
+                    <i class="ri-linkedin-fill"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" target="_blank">
+                    <i class="ri-instagram-fill"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-3 col-sm-6">
+            <div class="single-footer-widget">
+              <h3>Information</h3>
+              <ul class="import-link">
+                <li>
+                  <a href="#">About</a>
+                </li>
+                <li>
+                  <a href="#">Order Tracking</a>
+                </li>
+                <li>
+                  <a href="#">Terms & Conditions</a>
+                </li>
+                <li>
+                  <a href="#">Store Location</a>
+                </li>
+                <li>
+                  <a href="#">Privacy Policy</a>
+                </li>
+                <li>
+                  <a href="#">Delivery Information</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-3 col-sm-6">
+            <div class="single-footer-widget">
+              <h3>Customer Service</h3>
+              <ul class="import-link">
+                <li>
+                  <a href="#">Help Center</a>
+                </li>
+                <li>
+                  <a href="#">Products</a>
+                </li>
+                <li>
+                  <a href="#">Money-back Guarantee!</a>
+                </li>
+                <li>
+                  <a href="#">Blog</a>
+                </li>
+                <li>
+                  <a href="#">Accessibility</a>
+                </li>
+                <li>
+                  <a href="#">Contact</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-3 col-sm-6">
+            <div class="single-footer-widget">
+              <h3>Download App On Mobile</h3>
+              <p>30% discount on your first order</p>
+              <ul class="app-btn">
+                <li>
+                  <a href="#" target="_blank">
+                    <img src="/static/images/app-store.png" alt="Image" />
+                  </a>
+                </li>
+                <li>
+                  <a href="#" target="_blank">
+                    <img src="/static/images/google-play.png" alt="Image" />
+                  </a>
+                </li>
+              </ul>
+              <span class="payment">We Accept Payment Via</span>
+              <ul class="payment-option">
+                <li>
+                  <img src="/static/images/payment/payment-1.png" alt="Image" />
+                </li>
+                <li>
+                  <img src="/static/images/payment/payment-2.png" alt="Image" />
+                </li>
+                <li>
+                  <img src="/static/images/payment/payment-3.png" alt="Image" />
+                </li>
+                <li>
+                  <img src="/static/images/payment/payment-4.png" alt="Image" />
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="copy-right-area">
+      <div class="container">
+        <p>
+          Copyright © 2024 Designed By
+          <a href="#" target="_blank">Group BB</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="go-top">
+      <i class="ri-arrow-up-s-fill"></i>
+      <i class="ri-arrow-up-s-fill"></i>
+    </div>
+
+    <script src="/static/js/jquery.min.js"></script>
+
+    <script src="/static/js/bootstrap.bundle.min.js"></script>
+
+    <script src="/static/js/meanmenu.min.js"></script>
+
+    <script src="/static/js/owl.carousel.min.js"></script>
+
+    <script src="/static/js/wow.min.js"></script>
+
+    <script src="/static/js/range-slider.min.js"></script>
+
+    <script src="/static/js/form-validator.min.js"></script>
+
+    <script src="/static/js/contact-form-script.js"></script>
+
+    <script src="/static/js/ajaxchimp.min.js"></script>
+
+    <script src="/static/js/custom.js"></script>
+  </body>
+</html>

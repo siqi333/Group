@@ -1,0 +1,86 @@
+{% extends 'customer/customer_dashboard.html' %} {% block content1 %} {%
+endblock %} {% block content %}
+
+<section class="dashboard-area ptb-54">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4">
+        <ul class="dashboard-navigation">
+          <li>
+            <h3>Setting</h3>
+          </li>
+          <li>
+            <a href="/customer/personal">My Profile</a>
+          </li>
+          <li>
+            <a href="/customer/password">Password</a>
+          </li>
+          <li>
+            <a href="/customer/notification">Reminder</a>
+          </li>
+          <li>
+            <a href="/customer/identification">Identification</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="address-list">
+          {% with messages = get_flashed_messages(with_categories=true) %} {% if
+          messages %}
+          <ul class="flashes">
+            {% for category, message in messages %}
+            <li
+              class="{{ category }}"
+              style="color: {{ 'green' if 'success' in category else 'red' }};"
+            >
+              {{ message }}
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %} {% endwith %}
+
+          <h3>Identification</h3>
+          <form
+            class="submit-property-form"
+            method="POST"
+            enctype="multipart/form-data"
+          >
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <label for="image">Upload New Identification Image</label>
+                  <input
+                    type="file"
+                    id="image"
+                    class="form-control-file"
+                    name="image"
+                    aria-label="Image"
+                  />
+                  {% if customer_image %}
+                  <img
+                    src="{{ url_for('static', filename='identifications/' ~ customer_image) }}"
+                    alt="Current Image"
+                    class="img-thumbnail mt-2"
+                    style="max-width: 200px"
+                  />
+                  <input
+                    type="hidden"
+                    name="current_image"
+                    value="{{ customer_image }}"
+                  />
+                  {% endif %}
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <button type="submit" class="default-btn">Update Image</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

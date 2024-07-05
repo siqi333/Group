@@ -1,0 +1,109 @@
+{% extends 'national/national_dashboard.html' %} {% block content1 %} {% endblock %}
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-{{ category }}">* {{ message }}</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="container mt-5 d-flex justify-content-center">
+	<div class="col-lg-8">
+		<div class="card shadow-lg">
+			<div class="card-header default-btn text-white">
+				<h3 class="mb-0"></h3>
+			</div>
+			<div class="card-body">
+				<form method="POST" class="submit-property-form" enctype="multipart/form-data">
+					<div class="row">
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label for="first_name">First Name</label>
+								<input type="text" class="form-control" id="first_name"
+									value="{{ staff_profile.first_name }}" name="first_name" required
+									pattern="[A-Za-z ]+" title="Please enter only English alphabets" />
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label for="last_name">Last Name</label>
+								<input type="text" class="form-control" id="last_name"
+									value="{{ staff_profile.last_name }}" name="last_name" required pattern="[A-Za-z ]+"
+									title="Please enter only English alphabets" />
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label for="email">Email Address</label>
+								<input type="email" class="form-control" id="email" value="{{ staff_profile.email }}"
+									name="email" />
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label for="phone">Phone Number</label>
+								<input type="text" class="form-control" id="phone" value="{{ staff_profile.phone }}"
+									name="phone" required pattern="\d{9,11}"
+									title="Please enter a valid phone number" />
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label for="address">Address</label>
+								<input type="text" class="form-control" id="address" value="{{ staff_profile.address }}"
+									name="address" />
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label for="position">Position</label>
+								<input type="text" class="form-control" id="position"
+									value="{{ staff_profile.position }}" name="position" />
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label for="status">Status</label>
+								<select class="form-control" id="status" name="status">
+									<option value="active" {% if staff_profile.status=='active' %}selected{% endif %}>Active</option>
+									<option value="deactive" {% if staff_profile.status=='deactive' %}selected{% endif %}>Deactive</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label for="UploadImage">Photo:</label>
+								<input type="file" class="form-control-file" id="UploadImage" name="UploadImage"
+									placeholder="Upload an image" />
+								{% if staff_profile.image %}
+								<img id="img" name="img"
+									src="{{ url_for('static', filename='images/profile/' ~ staff_profile.image) }}"
+									class="img-thumbnail mt-3" style="width: 100px; height: 100px;" />
+								{% endif %}
+								<input type="hidden" id="Image" name="Image" value="{{ staff_profile.image }}" />
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<button type="submit" class="btn default-btn btn-block">Save Changes</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	document.getElementById("UploadImage").addEventListener("change", function (event) {
+		var file = event.target.files[0];
+		if (file) {
+			var reader = new FileReader();
+			reader.onload = function (e) {
+				document.getElementById("img").src = e.target.result;
+			};
+			reader.readAsDataURL(file);
+		}
+	});
+</script>
+{% endblock %}

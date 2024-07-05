@@ -1,0 +1,73 @@
+{% extends 'customer/customer_dashboard.html' %} {% block content1 %} {%
+endblock %} {% block content %}
+<section class="invoice-details-area ptb-54">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="invoice-controller border p-4 rounded">
+          <div class="invoice-header text-center mb-4">
+            <h2 class="font-weight-bold">Receipt</h2>
+          </div>
+          {% if receipt_details %}
+          <div class="invoice-details mb-4">
+            <div class="row">
+              <div class="col-6 text-left">
+                <p class="mb-1">
+                  Order Number:
+                  <strong
+                    >{% if receipt_details[0][0] < 10 %} #00{{
+                    receipt_details[0][0] }} {% elif receipt_details[0][0] < 100
+                    %} #0{{ receipt_details[0][0] }} {% else %} #{{
+                    receipt_details[0][0] }} {% endif %}</strong
+                  >
+                </p>
+              </div>
+              <div class="col-6 text-right">
+                <p class="mb-1">
+                  Payment Date: <strong>{{ receipt_details[0][1] }}</strong>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="invoice-table table-responsive">
+            <table id="invoiceTable" class="table table-bordered table-striped">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">Equipment</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for detail in receipt_details %}
+                <tr>
+                  <td>{{ detail[2] }}</td>
+                  <td>{{ detail[3] }}</td>
+                  <td>${{ detail[4] }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                  <td colspan="2" class="text-right">
+                    <strong>Total Amount</strong> (15% GST included)
+                  </td>
+                  <td><strong>${{ total_amount[0] }}</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="text-center">
+            <p>No receipt details available.</p>
+          </div>
+          {% endif %}
+        </div>
+        <div class="mt-4">
+          <a href="{{ url_for('customer_receipt') }}" class="btn default-btn"
+            >Back to Receipts</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

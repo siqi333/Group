@@ -1,0 +1,64 @@
+{% extends 'admin/admin_dashboard.html' %} {% block content %}
+
+<section class="dashboard-area ptb-54">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8" style="width: 100%">
+        <div class="cart-area recent-order">
+          <h3>Damage Report</h3>
+          <form class="cart-controller mb-0">
+            <div class="cart-table table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Equipment</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Photo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for record in records %}
+                  <tr>
+                    <td class="name">{{record[0]}}</td>
+                    <td class="email">{{record[1]}}</td>
+                    <td class="equipment">{{record[2]}}</td>
+                    <td class="description">{{record[3]}}</td>
+                    <td class="photo">
+                      <div style="display: flex; justify-content: center">
+                        <img
+                          src="/static/images/icon/{{ record[4] }}"
+                          alt="Image"
+                          style="width: 100%; height: auto; max-width: 100px"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .table th,
+  .table td {
+    width: 20%;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .table img {
+    width: 100%;
+    height: auto;
+    max-width: 100px;
+  }
+</style>
+
+{% endblock %}

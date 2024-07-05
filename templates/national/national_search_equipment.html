@@ -1,0 +1,155 @@
+{% extends 'national/national_dashboard.html' %} {% block content %}
+
+<style>
+  .details {
+    display: none;
+  }
+  .details.active {
+    display: table-row;
+  }
+
+  .detail_open:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+  }
+</style>
+
+<section class="dashboard-area ptb-54">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8" style="width: 100%">
+        <div class="cart-area recent-order">
+          <h3>Equipment Details</h3>
+
+          <div class="cart-table table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col">Equipment Id</th>
+                  <th scope="col" style="text-align: center">Equipment Name</th>
+                  <th scope="col">Hire Cost (Day)</th>
+                  <th scope="col">Min Hire Day</th>
+                  <th scope="col">Max Hire Day</th>
+                </tr>
+              </thead>
+
+              {% if equipment_details %}
+
+              <tbody>
+                {% for details in equipment_details %}
+                <tr class="detail_open" data-id="{{details[0]}}">
+                  <td class="product-thumbnail">
+                    <img
+                      src="/static/images/products/{{details[4]}}"
+                      alt="Image"
+                      style="width: 58px; height: 58px"
+                    />
+                  </td>
+                  <td class="product-id" style="text-align: center">
+                    {{details[0]}}
+                  </td>
+                  <td class="product-name" style="text-align: center">
+                    {{details[1]}}
+                  </td>
+                  <td class="product-price" style="text-align: center">
+                    ${{details[5]}}
+                  </td>
+                  <td class="product-price" style="text-align: center">
+                    {{details[6]}}
+                  </td>
+                  <td class="product-price" style="text-align: center">
+                    {{details[7]}}
+                  </td>
+                </tr>
+
+                <tr class="details" data-id="{{details[0]}}">
+                  <td colspan="6" id="td">
+                    <div
+                      class="col-lg-12 col-md-12"
+                      style="margin-top: 30px"
+                      id="details"
+                    >
+                      <div id="reviews" class="tab products-details-tab">
+                        <div class="row">
+                          <div class="col-lg-12 col-md-12">
+                            <div
+                              class="tab_content"
+                              style="border: 1px solid #dddddd"
+                            >
+                              <div class="tabs_item">
+                                <div
+                                  class="products-details-tab-content"
+                                  style="padding: 10px"
+                                >
+                                  <h3>Product Description</h3>
+                                  <p
+                                    style="
+                                      white-space: pre-line;
+                                      margin-top: -50px;
+                                    "
+                                  >
+                                    {{details[2]}}
+                                  </p>
+                                  <p></p>
+                                  <h3>Specification</h3>
+                                  <ul class="specification">
+                                    <li>Model: 001</li>
+                                    <li>Battery Chemistry: Lithm</li>
+                                    <li>Battery Voltage: 120V</li>
+                                    <li>Battery Capacity: 1.0Ah</li>
+                                    <li>Max Capacity In Metal: 20mm</li>
+                                    <li>Weight: 2.5kg</li>
+                                    <li>Drilling capacity: Concrete: 32 mm</li>
+                                    <li>No Load Speed:0-520 rpm</li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                {% endfor %}
+              </tbody>
+
+              {% else %}
+              <tbody>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td><h3>No Equipment info found!</h3></td>
+                </tr>
+              </tbody>
+
+              {% endif %}
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const detailOpenElements = document.querySelectorAll(".detail_open");
+
+    detailOpenElements.forEach(function (element) {
+      element.addEventListener("click", function () {
+        const clickedId = this.getAttribute("data-id");
+        const detailsElement = document.querySelector(
+          '.details[data-id="' + clickedId + '"]'
+        );
+
+        detailsElement.classList.toggle("active");
+      });
+    });
+  });
+</script>
+
+{% endblock %}

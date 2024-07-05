@@ -1,0 +1,168 @@
+{% extends 'local/local_dashboard.html' %} {% block content %} {% with messages
+= get_flashed_messages(with_categories=true) %} {% if messages %} {% for
+category, message in messages %}
+<div class="alert alert-danger">* {{ message }}</div>
+{% endfor %} {% endif %} {% endwith %}
+
+<section class="dashboard-area ptb-54">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4">
+        <ul class="dashboard-navigation">
+          <li>
+            <h3>Setting</h3>
+          </li>
+          <li>
+            <a href="/local/personal">My Profile</a>
+          </li>
+          <li>
+            <a href="/local/password">Password</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="edit-profile">
+          <h3>My Profile</h3>
+
+          <form method="POST" class="submit-property-form">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>First Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    value="{{record.first_name}}"
+                    name="first_name"
+                    required
+                    pattern="[A-Za-z ]+"
+                    title="Please enter only English alphabets"
+                  />
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Last Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    value="{{record.last_name}}"
+                    name="last_name"
+                    required
+                    pattern="[A-Za-z ]+"
+                    title="Please enter only English alphabets"
+                  />
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Email Address</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    value="{{record.email}}"
+                    name="email"
+                  />
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Phone Number</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    value="{{record.phone}}"
+                    name="phone"
+                    required
+                    pattern="\d{9,11}"
+                    title="Please enter a valid phone number"
+                  />
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Address</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    value="{{record.address}}"
+                    name="address"
+                  />
+                </div>
+              </div>
+
+              <div class="col-lg-12">
+                <label for="UploadImage">Photo:</label>
+                <input
+                  type="file"
+                  class="form-control"
+                  id="UploadImage"
+                  name="UploadImage"
+                  placeholder="Upload an image"
+                />
+                {% if record.Image%}
+                <img
+                  id="img"
+                  name="img"
+                  src="/static/images/profile/{{record.Image}}"
+                  style="
+                    width: 100px;
+                    height: 100px;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                  "
+                />
+                {% endif %}
+
+                <input
+                  type="hidden"
+                  id="Image"
+                  name="Image"
+                  value="{{record.Image}}"
+                />
+                <br />
+              </div>
+
+              <div class="col-lg-12">
+                <button type="submit" class="default-btn">Save Change</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // 监听选择文件的事件
+  document
+    .getElementById("UploadImage")
+    .addEventListener("change", function (event) {
+      // 获取选择的文件
+      var file = event.target.files[0];
+
+      // 创建一个FormData对象
+      var formData = new FormData();
+
+      // 将选择的文件添加到FormData对象中
+      formData.append("file", file);
+
+      // 发送POST请求到上传图片的接口
+      fetch("/upload", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // 将文件路径写入隐藏的输入框
+          document.getElementById("Image").value = data.file_path;
+          document.getElementById("img").src =
+            "/static/images/profile" + data.file_path;
+        })
+        .catch((error) => console.error("Error:", error));
+    });
+</script>
+{% endblock %}

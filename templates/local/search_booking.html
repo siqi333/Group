@@ -1,0 +1,121 @@
+{% extends 'local/local_dashboard.html' %}{% block content1 %} {%
+endblock %} {% block content %}
+<style>
+  /* 定义tr的hover效果 */
+  tr#order_open:hover {
+    background-color: #f1f1f1; /* 改变背景颜色 */
+    cursor: pointer; /* 鼠标变成手型 */
+  }
+</style>
+
+<section class="dashboard-area ptb-54">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8" style="width: 100%">
+        <div class="cart-area recent-order">
+          <h3>Search details</h3>
+          <div class="cart-table table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">Order</th>
+                  <th scope="col">Store</th>
+
+                  <th scope="col">Total</th>
+                  <th scope="col" style="text-align: center">Booking Date</th>
+                  <th scope="col" style="text-align: center">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if bookings %}
+                <tr id="order_open">
+                  <td class="product-order">
+                    {% if bookings[0] < 10 %} #00{{ bookings[0] }} {% elif
+                    bookings[0] < 100 %} #0{{ bookings[0] }} {% else %} #{{
+                    bookings[0] }} {% endif %}
+                  </td>
+                  <td class="product-store">{{bookings[1]}}</td>
+                  <td class="product-subtotal">${{bookings[2]}}</td>
+                  <td id="transform" style="text-align: center">
+                    {{bookings[3]}}
+                  </td>
+                  <td class="product-subtotal" style="text-align: center">
+                    {{bookings[4]}}
+                  </td>
+                </tr>
+
+                {% else %}
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><h3>No booking info found!</h3></td>
+
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="col-lg-8"
+        id="details"
+        style="width: 100%; margin-top: 30px; display: none"
+      >
+        <div class="cart-area recent-order">
+          <h3>Booking Details</h3>
+
+          <div class="cart-table table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">Product</th>
+                  <th scope="col"></th>
+                  <th scope="col" style="text-align: center">Quantity</th>
+                  <th scope="col">Total</th>
+                  <th scope="col" style="text-align: center">Hire Period</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for detail in booking_details %}
+                <tr>
+                  <td class="product-thumbnail">
+                    <img
+                      src="/static/images/products/{{detail[0]}}"
+                      alt="Image"
+                      style="width: 58px; height: 58px"
+                    />
+                  </td>
+                  <td class="product-name">{{detail[1]}}</td>
+                  <td class="product-price" style="text-align: center">
+                    {{detail[2]}}
+                  </td>
+                  <td class="product-price">${{detail[3]}}</td>
+                  <td class="days" style="text-align: center">
+                    <span class="days">{{detail[4]}} - {{detail[5]}}</span>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const order_open = document.getElementById("order_open");
+  const details = document.getElementById("details");
+
+  order_open.addEventListener("click", function () {
+    if (details.style.display === "none" || details.style.display === "") {
+      details.style.display = "block";
+    } else {
+      details.style.display = "none";
+    }
+  });
+</script>
+
+{% endblock %}

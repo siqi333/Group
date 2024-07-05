@@ -1,0 +1,124 @@
+{% extends 'staff/staff_dashboard.html' %} {% block content1 %} {% endblock %}
+{% block content %}
+<section class="cart-area ptb-54">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="cart-controller">
+                    <div class="cart-table table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-header">
+                                <tr>
+                                    <th scope="col" class="text-center">Feedback Name</th>
+                                    <th scope="col" class="text-center">Feedback Email</th>
+                                    <th scope="col" class="text-center">Feedback Phone</th>
+                                    <th scope="col" class="text-center">Subject</th>
+                                    <th scope="col" class="text-left">Feedback Time</th>
+                                    <th scope="col" class="text-left">Store Name</th>
+                                    <th scope="col" class="text-center">Option</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if feedbacks %}
+                                    {% for record in feedbacks %}
+                                        <tr class="">
+                                            <td class="name text-center">{{ record[1] }}</td>
+                                            <td class="name text-center">{{ record[2] }}</td>
+                                            <td class="name text-center">{{ record[3] }}</td>
+                                            <td class="name text-center">{{ record[4] }}</td>
+                                            <td class="name text-center">{{ record[5] }}</td>
+                                            <td class="name text-center">{{ record[6] }}</td>
+                                            <td class="name text-center">
+                                                <button class="btn btn-success" onclick="location.href='/staff/feedback_detail?id={{record[0]}}'" type="button">Chat</button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="6" class="text-center">No feedback records found.</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .cart-area {
+        padding-top: 54px;
+        padding-bottom: 54px;
+        background-color: #f8f9fa;
+    }
+
+    .cart-table {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-header {
+        background-color: #e9ecef;
+        color: #333;
+    }
+
+    .table-header th {
+        text-align: center;
+    }
+
+    .product-thumbnail img {
+        width: 100px;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .text-left {
+        text-align: left;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: #fff;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+    }
+
+    @media (max-width: 768px) {
+        .cart-table {
+            padding: 10px;
+        }
+
+        .product-thumbnail img {
+            width: 80px;
+        }
+
+        .table-header, .table-header th, .name {
+            font-size: 12px;
+            text-align:center
+        }
+    }
+
+    .table-success {
+        background-color: #d4edda;
+    }
+
+    .pagination {
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}

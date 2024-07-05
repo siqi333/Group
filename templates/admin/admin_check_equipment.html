@@ -1,0 +1,161 @@
+{% extends 'admin/admin_dashboard.html' %}
+{% block content1 %} {% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Equipment Hire Payment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+
+      .payment-container {
+        max-width: 500px;
+        min-height: 500px;
+        margin: auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgb(237, 233, 233);
+        margin-top: 50px;
+      }
+
+      .payment-title {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .select-min-height {
+        min-height: 40px;
+      }
+
+      .payment-form input,
+      .payment-form select,
+      .payment-form button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+      }
+
+      .payment-form input:focus,
+      .payment-form select:focus {
+        outline: none;
+        border-color: #007bff;
+      }
+
+      .payment-form button,
+      .home-button {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        text-align: center;
+        display: block;
+        margin-bottom: 20px;
+      }
+
+      .home-button {
+        background-color: #28a745;
+      }
+
+      .home-button:hover {
+        background-color: #007bff;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="shadow p-3 mb-5 rounded" style="width: 60%; margin: 0 auto; border-radius: 15px">
+      <p class="lead">Inventory Information</p>
+
+      <div class="showing-result">
+        <div class="row align-items-center">
+          <div class="col-lg-6 col-md-6">
+            <div class="showing-top-bar-ordering" style="width: 300px; display: flex; align-items: center">
+              <span>Store: </span>
+              <select id="store-select" class="form-select" aria-label="Default select example" style="flex: 1; margin-left: 20px">
+                <option selected value="all">Select Store</option>
+                {% for store in stores %}
+                <option value="{{store[0]}}">{{store[1]}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6">
+            <div class="showing-top-bar-ordering" style="width: 300px; display: flex; align-items: center">
+              <span>Category: </span>
+              <select id="category-select" class="form-select" aria-label="Default select example" style="flex: 1; margin-left: 20px">
+                <option selected value="all">Select Category</option>
+                {% for category in cateogrys %}
+                <option value="{{category[0]}}">{{category[1]}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <table id="data" class="table table-striped nowrap" style="width: 100%">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Image</th>
+            <th>Stock</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in records %}
+          <tr class="store-{{ record[0] }} category-{{ record[3] }}">
+            <td>{{ record[1] }}</td>
+            <td>
+              <div style="display: flex; justify-content: left">
+                <img src="/static/images/products/{{ record[2] }}" alt="Image" style="width: 50px; height: auto;" />
+              </div>
+            </td>
+            <td>{{ record[4] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      document.getElementById("store-select").addEventListener("change", filterTable);
+      document.getElementById("category-select").addEventListener("change", filterTable);
+
+      function filterTable() {
+        var selectedStore = document.getElementById("store-select").value;
+        var selectedCategory = document.getElementById("category-select").value;
+        var rows = document.querySelectorAll("#data tbody tr");
+
+        rows.forEach(function(row) {
+          var showRow = true;
+
+          if (selectedStore !== "all" && !row.classList.contains("store-" + selectedStore)) {
+            showRow = false;
+          }
+          if (selectedCategory !== "all" && !row.classList.contains("category-" + selectedCategory)) {
+            showRow = false;
+          }
+
+          row.style.display = showRow ? "" : "none";
+        });
+      }
+    </script>
+  </body>
+</html>
+{% endblock %}
